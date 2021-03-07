@@ -11,7 +11,7 @@ const AdminRoute = ({ children, ...rest }: RouteProps) => {
       {!isNil(user) && user.role === Role.Admin ? (
         children
       ) : (
-        <Redirect to={ROUTE.DASHBOARD_PAGE} />
+        <Redirect to={ROUTE.SIGN_IN_PAGE} />
       )}
     </Route>
   );
