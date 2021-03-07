@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import App from './features/App';
-import AppLoading from './features/AppLoading';
 import { AuthProvider } from './libs/auth';
 import ThemeProvider from './libs/material-ui/ThemeProvider';
 import TokenStorage from './libs/tokenstorage/TokenStorage';
@@ -18,9 +17,7 @@ ReactDOM.render(
     <ApolloProvider client={createClient(API_URI, tokenStorage)}>
       <ThemeProvider>
         <AuthProvider tokenStorage={tokenStorage}>
-          <AppLoading>
-            <App />
-          </AppLoading>
+          <App />
         </AuthProvider>
       </ThemeProvider>
     </ApolloProvider>

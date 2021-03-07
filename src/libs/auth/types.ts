@@ -1,9 +1,10 @@
 import TokenStorage from '../tokenstorage/TokenStorage';
+import { Role } from 'config/app';
 
 export type User = {
   id: number;
   displayName: string;
-  role: UserRole;
+  role: Role;
   email: string;
 };
 

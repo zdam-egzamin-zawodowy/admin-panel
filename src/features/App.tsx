@@ -1,22 +1,27 @@
+import { Route, Switch } from 'react-router-dom';
+import PublicRoute from '../libs/router/PublicRoute';
+import AdminRoute from '../libs/router/AdminRoute';
 import AppLoading from './AppLoading';
+import SignInPage from './SignInPage/SignInPage';
+import NotFoundPage from './NotFoundPage/NotFoundPage';
+import AdminRoutes from './AdminRoutes';
+import { ROUTE, ADMIN_ROUTES } from '../config/routing';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppLoading>
+      <Switch>
+        <PublicRoute exact path={ROUTE.SIGN_IN_PAGE}>
+          <SignInPage />
+        </PublicRoute>
+        <AdminRoute exact path={ADMIN_ROUTES}>
+          <AdminRoutes />
+        </AdminRoute>
+        <Route path="*">
+          <NotFoundPage />
+        </Route>
+      </Switch>
+    </AppLoading>
   );
 }
 
