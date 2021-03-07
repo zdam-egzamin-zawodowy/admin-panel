@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { MuiThemeProvider } from '@material-ui/core';
 import { ApolloProvider } from '@apollo/client';
 import App from './features/App';
+import AppLoading from './features/AppLoading';
 import { AuthProvider } from './libs/auth';
+import ThemeProvider from './libs/material-ui/ThemeProvider';
 import TokenStorage from './libs/tokenstorage/TokenStorage';
 import createClient from './libs/graphql/createClient';
 import { API_URI } from './config/api';
@@ -15,9 +16,13 @@ const tokenStorage = new TokenStorage();
 ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={createClient(API_URI, tokenStorage)}>
-      <AuthProvider tokenStorage={tokenStorage}>
-        <App />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider tokenStorage={tokenStorage}>
+          <AppLoading>
+            <App />
+          </AppLoading>
+        </AuthProvider>
+      </ThemeProvider>
     </ApolloProvider>
   </BrowserRouter>,
   document.getElementById('root')
