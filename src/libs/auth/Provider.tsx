@@ -17,8 +17,10 @@ type MeQueryResult = {
 };
 
 type SignInMutationResult = {
-  token: string;
-  user: User;
+  signIn?: {
+    token: string;
+    user: User;
+  };
 };
 
 type SignInMutationVariables = {
@@ -75,19 +77,19 @@ export function AuthProvider(props: AuthProviderProps) {
       },
     });
 
-    if (result.data?.user) {
-      if (isFunction(validate) && !validate(result.data?.user)) {
+    if (result.data?.signIn?.user) {
+      if (isFunction(validate) && !validate(result.data.signIn.user)) {
         return null;
       }
-      tokenStorage.setToken(result.data.token);
-      setUser(result.data.user);
+      tokenStorage.setToken(result.data.signIn.token);
+      setUser(result.data.signIn.user);
       client.writeQuery<MeQueryResult>({
         query: QUERY_ME,
         data: {
-          me: result.data.user,
+          me: result.data.signIn.user,
         },
       });
-      return result.data.user;
+      return result.data.signIn.user;
     }
 
     return null;

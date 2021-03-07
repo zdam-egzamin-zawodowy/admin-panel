@@ -9,6 +9,7 @@ import TokenStorage from './libs/tokenstorage/TokenStorage';
 import createClient from './libs/graphql/createClient';
 import { API_URI } from './config/api';
 import reportWebVitals from './reportWebVitals';
+import { SnackbarProvider } from 'material-ui-snackbar-provider';
 
 const tokenStorage = new TokenStorage();
 
@@ -17,7 +18,14 @@ ReactDOM.render(
     <ApolloProvider client={createClient(API_URI, tokenStorage)}>
       <ThemeProvider>
         <AuthProvider tokenStorage={tokenStorage}>
-          <App />
+          <SnackbarProvider
+            SnackbarProps={{
+              autoHideDuration: 4000,
+              anchorOrigin: { vertical: 'top', horizontal: 'center' },
+            }}
+          >
+            <App />
+          </SnackbarProvider>
         </AuthProvider>
       </ThemeProvider>
     </ApolloProvider>
