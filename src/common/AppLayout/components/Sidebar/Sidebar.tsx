@@ -1,14 +1,20 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import useStyles from './useStyles';
 import { ROUTE } from 'config/routing';
 import { Route } from './components/Nav/types';
-
 import { useTheme } from '@material-ui/core/styles';
-import { SwipeableDrawer, DrawerProps, Toolbar } from '@material-ui/core';
+
+import {
+  SwipeableDrawer,
+  DrawerProps,
+  Toolbar,
+  Divider,
+} from '@material-ui/core';
+import useStyles from './useStyles';
 import { Dashboard as DashboardIcon } from '@material-ui/icons';
 import Nav from './components/Nav/Nav';
+import CurrentUser from './components/CurrentUser/CurrentUser';
 
 export interface Props {
   className?: string;
@@ -47,6 +53,8 @@ const Sidebar = ({ className, open, variant, onClose, onOpen }: Props) => {
     >
       <Toolbar />
       <div className={clsx(classes.root, className)}>
+        <CurrentUser />
+        <Divider />
         <Nav routes={routes} />
       </div>
     </SwipeableDrawer>

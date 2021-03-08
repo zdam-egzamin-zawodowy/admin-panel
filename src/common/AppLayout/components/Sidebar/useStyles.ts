@@ -13,6 +13,9 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     height: '100%',
     overflowY: 'auto',
+    '& > *:not(:last-child)': {
+      margin: theme.spacing(1, 0),
+    },
   },
 }));
 export default useStyles;
