@@ -4,13 +4,17 @@ import { Column } from './types';
 import { TableRow, TableCell } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-export interface Props {
+export interface TableLoadingProps {
   rowsPerPage: number;
   columns: Column[];
   size?: 'small' | 'medium';
 }
 
-function TableLoading({ rowsPerPage, columns, size = 'medium' }: Props) {
+function TableLoading({
+  rowsPerPage,
+  columns,
+  size = 'medium',
+}: TableLoadingProps) {
   return (
     <Fragment>
       {new Array(rowsPerPage).fill(0).map((_, index) => {

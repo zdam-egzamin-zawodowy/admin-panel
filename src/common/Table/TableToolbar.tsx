@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { Toolbar, ToolbarProps } from '@material-ui/core';
 
-export type Props = ToolbarProps;
+export type TableToolbarProps = ToolbarProps;
 
 const useStyles = makeStyles(theme => {
   return {
@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => {
   };
 });
 
-function TableToolbar({ children, className, ...rest }: Props) {
+function TableToolbar({ children, className, ...rest }: TableToolbarProps) {
   const classes = useStyles();
   return (
     <Toolbar {...rest} className={clsx(classes.toolbar, className)}>

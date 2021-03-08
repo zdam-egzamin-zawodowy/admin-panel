@@ -5,7 +5,7 @@ import { Action, Column, OrderDirection } from './types';
 import {
   Table as MUITable,
   TableBody,
-  TableProps,
+  TableProps as MUITableProps,
   TableBodyProps,
   TableContainer,
 } from '@material-ui/core';
@@ -15,7 +15,7 @@ import TableLoading from './TableLoading';
 import TableEmpty from './TableEmpty';
 import TableFooter, { TableFooterProps } from './TableFooter';
 
-export interface Props<T> {
+export interface TableProps<T> {
   columns: Column<T>[];
   actions?: Action<T>[];
   data: T[];
@@ -30,7 +30,7 @@ export interface Props<T> {
   ) => void | Promise<void>;
   onSelect?: (rows: T[]) => void;
   loading?: boolean;
-  tableProps?: TableProps;
+  tableProps?: MUITableProps;
   tableBodyProps?: TableBodyProps;
   footerProps?: TableFooterProps;
   hideFooter?: boolean;
@@ -56,7 +56,7 @@ function Table<T>({
   selected,
   onSelect,
   getRowKey,
-}: Props<T>) {
+}: TableProps<T>) {
   const headColumns =
     actions.length > 0
       ? [...columns, { field: 'action', label: 'Akcje' }]

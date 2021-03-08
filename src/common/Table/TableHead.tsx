@@ -10,7 +10,7 @@ import {
   SortDirection,
 } from '@material-ui/core';
 
-export interface Props {
+export interface TableHeadProps {
   columns: Column[];
   selection: boolean;
   onSelectAll?: () => void;
@@ -33,7 +33,7 @@ function TableHead({
   allSelected = false,
   onRequestSort,
   size = 'medium',
-}: Props) {
+}: TableHeadProps) {
   const createSortHandler = (property: string) => () => {
     if (onRequestSort) {
       if (property === orderBy) {

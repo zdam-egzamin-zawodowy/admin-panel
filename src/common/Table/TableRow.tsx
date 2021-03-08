@@ -8,7 +8,7 @@ import { TableRow, TableCell, Checkbox, Tooltip } from '@material-ui/core';
 
 import { Action, Column } from './types';
 
-export interface Props<T> {
+export interface TableRowProps<T> {
   actions: Action<T>[];
   columns: Column<T>[];
   row: T;
@@ -28,7 +28,7 @@ function EnhancedTableRow<T>({
   onSelect,
   size = 'medium',
   index,
-}: Props<T>) {
+}: TableRowProps<T>) {
   const handleSelect = () => {
     if (onSelect) {
       onSelect(row);
