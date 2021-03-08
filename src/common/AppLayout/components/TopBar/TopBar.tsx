@@ -35,11 +35,13 @@ const TopBar = ({ className, openSidebar }: Props) => {
                 <MenuIcon />
               </IconButton>
             </Hidden>
-            <Typography variant="h4">
-              <Link color="inherit" to={ROUTE.DASHBOARD_PAGE}>
-                Zdam Egzamin Zawodowy
-              </Link>
-            </Typography>
+            <Hidden xsDown>
+              <Typography variant="h4">
+                <Link color="inherit" to={ROUTE.DASHBOARD_PAGE}>
+                  Zdam Egzamin Zawodowy
+                </Link>
+              </Typography>
+            </Hidden>
           </div>
           <div className={classes.rightSideContainer}>
             <Button color="inherit" onClick={signOut}>

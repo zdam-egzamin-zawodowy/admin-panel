@@ -10,7 +10,7 @@ const CurrentUser = () => {
     <Box pr={0.5} pl={0.5}>
       <Typography variant="h6" align="center">
         Jesteś zalogowany jako: <br /> <strong>{user?.displayName}</strong> (ID:{' '}
-        {user?.id}).
+        {user?.id})
       </Typography>
     </Box>
   );
