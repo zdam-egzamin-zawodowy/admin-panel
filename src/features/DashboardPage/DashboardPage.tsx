@@ -1,5 +1,7 @@
+import AppLayout from 'common/AppLayout/AppLayout';
+
 const DashboardPage = () => {
-  return <div>DashboardPage</div>;
+  return <AppLayout>DashboardPage</AppLayout>;
 };
 
 export default DashboardPage;

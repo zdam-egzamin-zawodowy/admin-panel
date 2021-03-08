@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { useSnackbar } from 'material-ui-snackbar-provider';
-import { useAuth } from 'libs/auth';
 import { ApolloError } from '@apollo/client';
+import { useAuth } from 'libs/auth';
+import { Role } from '../../config/app';
+
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -13,9 +15,7 @@ import {
   FormGroup,
   TextField,
   Typography,
-  Box,
 } from '@material-ui/core';
-import { Role } from '../../config/app';
 
 type FormData = {
   email: string;

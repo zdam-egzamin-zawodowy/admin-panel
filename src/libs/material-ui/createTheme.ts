@@ -14,6 +14,11 @@ const createTheme = (): Theme => {
           },
         },
       },
+      props: {
+        MuiLink: {
+          underline: 'none',
+        },
+      },
     })
   );
 };
