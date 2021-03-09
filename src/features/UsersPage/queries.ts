@@ -7,7 +7,6 @@ export const QUERY_USERS = gql`
     $filter: UserFilter
     $sort: [String!]
   ) {
-    query
     users(offset: $offset, limit: $limit, filter: $filter, sort: $sort) {
       total
       items {

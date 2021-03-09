@@ -4,7 +4,7 @@ import {
 } from './TableFooter';
 
 export const validateRowsPerPage = (
-  rowsPerPage: number = ROWS_PER_PAGE_DEFAULT,
+  rowsPerPage: number | null = ROWS_PER_PAGE_DEFAULT,
   rowsPerPageOptions: Array<
     number | { value: number; label: string }
   > = ROWS_PER_PAGE_OPTIONS_DEFAULT
