@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
+import { SnackbarProvider } from 'material-ui-snackbar-provider';
+import { QueryParamProvider } from 'use-query-params';
 import App from './features/App';
 import { AuthProvider } from './libs/auth';
 import ThemeProvider from './libs/material-ui/ThemeProvider';
@@ -9,7 +11,6 @@ import TokenStorage from './libs/tokenstorage/TokenStorage';
 import createClient from './libs/graphql/createClient';
 import { API_URI } from './config/api';
 import reportWebVitals from './reportWebVitals';
-import { SnackbarProvider } from 'material-ui-snackbar-provider';
 
 const tokenStorage = new TokenStorage();
 
@@ -18,14 +19,16 @@ ReactDOM.render(
     <ApolloProvider client={createClient(API_URI, tokenStorage)}>
       <ThemeProvider>
         <AuthProvider tokenStorage={tokenStorage}>
-          <SnackbarProvider
-            SnackbarProps={{
-              autoHideDuration: 4000,
-              anchorOrigin: { vertical: 'top', horizontal: 'center' },
-            }}
-          >
-            <App />
-          </SnackbarProvider>
+          <QueryParamProvider ReactRouterRoute={Route}>
+            <SnackbarProvider
+              SnackbarProps={{
+                autoHideDuration: 4000,
+                anchorOrigin: { vertical: 'top', horizontal: 'center' },
+              }}
+            >
+              <App />
+            </SnackbarProvider>
+          </QueryParamProvider>
         </AuthProvider>
       </ThemeProvider>
     </ApolloProvider>

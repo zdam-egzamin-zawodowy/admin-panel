@@ -1,0 +1,9 @@
+overwrite: true
+schema: ${REACT_APP_API_URI:http://localhost:8080/graphql}
+generates:
+  src/libs/graphql/types.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+    config:
+      skipTypename: true

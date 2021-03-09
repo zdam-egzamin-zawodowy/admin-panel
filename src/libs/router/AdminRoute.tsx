@@ -1,7 +1,7 @@
 import { Route, Redirect, RouteProps } from 'react-router-dom';
 import { isNil } from 'lodash';
 import { useAuth } from '../auth';
-import { Role } from 'config/app';
+import { Role } from '../graphql/types';
 import { ROUTE } from 'config/routing';
 
 const AdminRoute = ({ children, ...rest }: RouteProps) => {

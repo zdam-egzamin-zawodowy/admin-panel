@@ -1,22 +1,17 @@
 import TokenStorage from '../tokenstorage/TokenStorage';
-import { Role } from 'config/app';
+import { User as _User, Maybe } from 'libs/graphql/types';
 
-export type User = {
-  id: number;
-  displayName: string;
-  role: Role;
-  email: string;
-};
+export type User = Omit<_User, 'activated'>;
 
 export interface AuthContext {
-  user: User | null;
+  user: Maybe<User>;
   tokenStorage: TokenStorage;
   signIn: (
     email: string,
     password: string,
     staySignedIn: boolean,
     validate?: (user: User) => boolean
-  ) => Promise<User | null>;
+  ) => Promise<Maybe<User>>;
   signOut: () => Promise<void>;
   loading: boolean;
 }

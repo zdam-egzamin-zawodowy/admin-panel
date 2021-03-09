@@ -1,6 +1,7 @@
 export const ROUTE = {
   SIGN_IN_PAGE: '/',
   DASHBOARD_PAGE: '/dashboard',
+  USERS_PAGE: '/users',
 };
 
 export const PUBLIC_ROUTES = [ROUTE.SIGN_IN_PAGE];

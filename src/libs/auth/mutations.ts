@@ -13,6 +13,7 @@ export const MUTATION_SIGN_IN = gql`
         displayName
         email
         role
+        activated
       }
     }
   }

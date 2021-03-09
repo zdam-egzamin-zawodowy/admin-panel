@@ -2,7 +2,7 @@ import { Redirect, Route, RouteProps } from 'react-router-dom';
 import { isNil } from 'lodash';
 import { useAuth } from '../auth';
 import { ROUTE } from '../../config/routing';
-import { Role } from '../../config/app';
+import { Role } from '../graphql/types';
 
 const PublicRoute = ({ children, ...rest }: RouteProps) => {
   const { user } = useAuth();

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useSnackbar } from 'material-ui-snackbar-provider';
 import { ApolloError } from '@apollo/client';
 import { useAuth } from 'libs/auth';
-import { Role } from '../../config/app';
+import { Role } from 'libs/graphql/types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -47,8 +47,8 @@ const SignInPage = () => {
           ? e.graphQLErrors[0].message
           : e.message
       );
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   return (

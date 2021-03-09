@@ -3,6 +3,7 @@ import { useApolloClient } from '@apollo/client';
 import { isFunction } from 'lodash';
 import { context as Context } from './context';
 import { AuthContext, User } from './types';
+import { MutationSignInArgs, Mutation } from 'libs/graphql/types';
 import TokenStorage from '../tokenstorage/TokenStorage';
 import { QUERY_ME } from './queries';
 import { MUTATION_SIGN_IN } from './mutations';
@@ -14,19 +15,6 @@ export interface AuthProviderProps {
 
 type MeQueryResult = {
   me: User | null;
-};
-
-type SignInMutationResult = {
-  signIn?: {
-    token: string;
-    user: User;
-  };
-};
-
-type SignInMutationVariables = {
-  email: string;
-  staySignedIn: boolean;
-  password: string;
 };
 
 export function AuthProvider(props: AuthProviderProps) {
@@ -66,8 +54,8 @@ export function AuthProvider(props: AuthProviderProps) {
     validate?: (user: User) => boolean
   ) => {
     const result = await client.mutate<
-      SignInMutationResult,
-      SignInMutationVariables
+      Pick<Mutation, 'signIn'>,
+      MutationSignInArgs
     >({
       mutation: MUTATION_SIGN_IN,
       variables: {
