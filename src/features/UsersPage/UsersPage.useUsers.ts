@@ -18,7 +18,7 @@ const useUsers = (page: number, limit: number, sort: string) => {
   return {
     users: data?.users.items ?? [],
     get loading() {
-      return this.users.length === 0 || loading;
+      return this.users.length === 0 && loading;
     },
     total: data?.users.total ?? 0,
   };

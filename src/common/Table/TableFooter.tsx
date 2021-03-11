@@ -4,6 +4,7 @@ import {
   TablePagination,
   TableRow,
   TableFooter as MUITableFooter,
+  TablePaginationProps as MUITablePaginationProps,
 } from '@material-ui/core';
 
 export interface TableFooterProps {
@@ -12,8 +13,8 @@ export interface TableFooterProps {
   onChangePage?: (page: number) => void;
   rowsPerPage?: number;
   onChangeRowsPerPage?: (limit: number) => void;
-  rowsPerPageOptions?: Array<number | { value: number; label: string }>;
-  size?: 'small' | 'medium';
+  rowsPerPageOptions?: MUITablePaginationProps['rowsPerPageOptions'];
+  size?: MUITablePaginationProps['size'];
 }
 
 export const ROWS_PER_PAGE_DEFAULT = 25;

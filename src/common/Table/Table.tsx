@@ -6,7 +6,6 @@ import {
   Table as MUITable,
   TableBody,
   TableProps as MUITableProps,
-  TableBodyProps,
   TableContainer,
 } from '@material-ui/core';
 import TableHead from './TableHead';
@@ -23,18 +22,15 @@ export interface TableProps<T> {
   orderDirection?: OrderDirection;
   selection?: boolean;
   idFieldName?: string;
-  getRowKey?: (row: T, index: number) => string | number | null | undefined;
   onRequestSort?: (
     orderBy: string,
     orderDirection: OrderDirection
   ) => void | Promise<void>;
   onSelect?: (rows: T[]) => void;
   loading?: boolean;
-  tableProps?: MUITableProps;
-  tableBodyProps?: TableBodyProps;
   footerProps?: TableFooterProps;
   hideFooter?: boolean;
-  size?: 'medium' | 'small';
+  size?: MUITableProps['size'];
   selected?: T[];
 }
 
@@ -48,19 +44,12 @@ function Table<T>({
   selection = false,
   loading = false,
   actions = [],
-  tableBodyProps = {},
-  tableProps = {},
   hideFooter = false,
   footerProps = {},
   size,
   selected,
   onSelect,
-  getRowKey,
 }: TableProps<T>) {
-  const headColumns =
-    actions.length > 0
-      ? [...columns, { field: 'action', label: 'Akcje' }]
-      : columns;
   const preparedFooterProps = {
     page: 0,
     rowsPerPage: validateRowsPerPage(
@@ -86,11 +75,12 @@ function Table<T>({
 
   return (
     <TableContainer>
-      <MUITable size={size} {...tableProps}>
+      <MUITable size={size}>
         <TableHead
-          columns={headColumns}
+          columns={columns}
           selection={selection}
           orderBy={orderBy}
+          hasActions={actions.length > 0}
           orderDirection={orderDirection}
           onRequestSort={onRequestSort}
           size={size}
@@ -101,10 +91,9 @@ function Table<T>({
           }}
           allSelected={selected?.length === data.length}
         />
-        <TableBody {...tableBodyProps}>
+        <TableBody>
           {loading ? (
             <TableLoading
-              columns={headColumns}
               size={size}
               rowsPerPage={preparedFooterProps.rowsPerPage}
             />
@@ -113,11 +102,7 @@ function Table<T>({
               return (
                 <TableRow
                   key={
-                    getRowKey
-                      ? getRowKey(item, index)
-                      : isObjKey(item, idFieldName)
-                      ? item[idFieldName] + ''
-                      : index
+                    isObjKey(item, idFieldName) ? item[idFieldName] + '' : index
                   }
                   index={index}
                   row={item}

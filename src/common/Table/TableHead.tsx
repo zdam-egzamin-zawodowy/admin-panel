@@ -22,6 +22,7 @@ export interface TableHeadProps {
     property: string,
     orderDirection: OrderDirection
   ) => void | Promise<void>;
+  hasActions: boolean;
 }
 
 function TableHead({
@@ -33,6 +34,7 @@ function TableHead({
   allSelected = false,
   onRequestSort,
   size = 'medium',
+  hasActions = false,
 }: TableHeadProps) {
   const createSortHandler = (property: string) => () => {
     if (onRequestSort) {
@@ -85,6 +87,7 @@ function TableHead({
             </TableCell>
           );
         })}
+        {hasActions && <TableCell size={size}>Akcje</TableCell>}
       </TableRow>
     </MUITableHead>
   );
