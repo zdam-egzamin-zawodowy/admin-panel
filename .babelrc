@@ -30,7 +30,11 @@
         "validator": {
           "transform": "validator/lib/${member}",
           "preventFullImport": true
-        }
+        },
+        "react-use": {
+          "transform": "react-use/lib/${member}",
+          "preventFullImport": true
+        },
       }
     ]
   ]
