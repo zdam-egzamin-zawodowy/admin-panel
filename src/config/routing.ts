@@ -1,6 +1,5 @@
 export enum Route {
   SignInPage = '/',
-  DashboardPage = '/dashboard',
   UsersPage = '/users',
   ProfessionsPage = '/professions',
 }

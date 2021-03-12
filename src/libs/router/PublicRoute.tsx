@@ -11,7 +11,7 @@ const PublicRoute = ({ children, ...rest }: RouteProps) => {
       {isNil(user) || user.role !== Role.Admin ? (
         children
       ) : (
-        <Redirect to={Route.DashboardPage} />
+        <Redirect to={Route.UsersPage} />
       )}
     </RRDRoute>
   );

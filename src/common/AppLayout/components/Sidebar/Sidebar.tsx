@@ -12,11 +12,7 @@ import {
   Divider,
 } from '@material-ui/core';
 import useStyles from './useStyles';
-import {
-  Dashboard as DashboardIcon,
-  Group as GroupIcon,
-  Work as WorkIcon,
-} from '@material-ui/icons';
+import { Group as GroupIcon, Work as WorkIcon } from '@material-ui/icons';
 import Nav from './components/Nav/Nav';
 import CurrentUser from './components/CurrentUser/CurrentUser';
 
@@ -33,12 +29,6 @@ const Sidebar = ({ className, open, variant, onClose, onOpen }: Props) => {
   const theme = useTheme();
   const { pathname } = useLocation();
   const routes: NavRoute[] = [
-    {
-      name: 'Dashboard',
-      to: Route.DashboardPage,
-      Icon: <DashboardIcon color="inherit" />,
-      exact: true,
-    },
     {
       name: 'Użytkownicy',
       to: Route.UsersPage,
