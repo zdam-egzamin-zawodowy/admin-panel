@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import { Route } from 'config/routing';
 import { Route as NavRoute } from './components/Nav/types';
-import { useTheme } from '@material-ui/core/styles';
 
+import { useTheme } from '@material-ui/core/styles';
 import {
   SwipeableDrawer,
   DrawerProps,

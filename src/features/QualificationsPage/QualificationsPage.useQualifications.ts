@@ -18,7 +18,10 @@ const useQualifications = (
       sort: [sort],
       limit,
       filter: {
-        nameIEQ: '%' + search + '%',
+        or: {
+          nameIEQ: '%' + search + '%',
+          codeIEQ: '%' + search + '%',
+        },
       },
     },
   });
