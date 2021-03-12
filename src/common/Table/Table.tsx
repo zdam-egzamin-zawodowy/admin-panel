@@ -26,7 +26,7 @@ export interface TableProps<T> {
     orderBy: string,
     orderDirection: OrderDirection
   ) => void | Promise<void>;
-  onSelect?: (rows: T[]) => void;
+  onSelect?: (checked: boolean, rows: T[]) => void;
   loading?: boolean;
   footerProps?: TableFooterProps;
   hideFooter?: boolean;
@@ -84,9 +84,14 @@ function Table<T>({
           orderDirection={orderDirection}
           onRequestSort={onRequestSort}
           size={size}
-          onSelectAll={() => {
+          onSelectAll={checked => {
             if (onSelect) {
-              onSelect(data);
+              onSelect(
+                checked,
+                data.filter(item =>
+                  checked ? !isSelected(item) : isSelected(item)
+                )
+              );
             }
           }}
           allSelected={selected?.length === data.length}
@@ -111,9 +116,9 @@ function Table<T>({
                   selection={selection}
                   columns={columns}
                   size={size}
-                  onSelect={row => {
+                  onSelect={(checked, row) => {
                     if (onSelect) {
-                      onSelect([row]);
+                      onSelect(checked, [row]);
                     }
                   }}
                 />

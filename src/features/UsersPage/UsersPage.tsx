@@ -1,12 +1,17 @@
 import { useState } from 'react';
+import { ApolloError, useMutation } from '@apollo/client';
 import {
   NumberParam,
   StringParam,
   useQueryParams,
   withDefault,
 } from 'use-query-params';
+import { useSnackbar } from 'material-ui-snackbar-provider';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import useUsers from './UsersPage.useUsers';
+import { validateRowsPerPage } from 'common/Table/helpers';
+import { MUTATION_CREATE_USER, MUTATION_UPDATE_USER } from './mutations';
+import { COLUMNS, DEFAULT_SORT, DialogType } from './constants';
 import {
   Maybe,
   MutationCreateUserArgs,
@@ -14,17 +19,13 @@ import {
   User,
   UserInput,
 } from 'libs/graphql/types';
-import { validateRowsPerPage } from 'common/Table/helpers';
-import { COLUMNS, DEFAULT_SORT, DialogType } from './constants';
 
 import { Container, IconButton, Paper } from '@material-ui/core';
 import { Edit as EditIcon } from '@material-ui/icons';
 import Table from 'common/Table/Table';
 import TableToolbar from './components/TableToolbar/TableToolbar';
 import FormDialog from './components/FormDialog/FormDialog';
-import { ApolloError, useMutation } from '@apollo/client';
-import { MUTATION_CREATE_USER, MUTATION_UPDATE_USER } from './mutations';
-import { useSnackbar } from 'material-ui-snackbar-provider';
+import { useUpdateEffect } from 'react-use';
 
 const UsersPage = () => {
   const [createUserMutation] = useMutation<any, MutationCreateUserArgs>(
@@ -37,6 +38,7 @@ const UsersPage = () => {
   );
   const [dialogType, setDialogType] = useState<DialogType>(DialogType.None);
   const [userBeingEdited, setUserBeingEdited] = useState<Maybe<User>>(null);
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const snackbar = useSnackbar();
   const [{ page, sort, search, ...rest }, setQueryParams] = useQueryParams({
     limit: NumberParam,
@@ -51,6 +53,12 @@ const UsersPage = () => {
     sort.toString(),
     search
   );
+
+  useUpdateEffect(() => {
+    if (selectedUsers.length > 0) {
+      setSelectedUsers([]);
+    }
+  }, [users]);
 
   const handleFormDialogSubmit = async (input: UserInput) => {
     try {
@@ -73,6 +81,16 @@ const UsersPage = () => {
     return false;
   };
 
+  const handleSelect = (checked: boolean, items: User[]) => {
+    setSelectedUsers(prevState =>
+      checked
+        ? [...prevState, ...items]
+        : prevState.filter(
+            item => !items.some(otherItem => otherItem.id === item.id)
+          )
+    );
+  };
+
   return (
     <Container>
       <Paper>
@@ -90,6 +108,8 @@ const UsersPage = () => {
           selection
           columns={COLUMNS}
           data={users}
+          selected={selectedUsers}
+          onSelect={handleSelect}
           actions={[
             {
               icon: row => {

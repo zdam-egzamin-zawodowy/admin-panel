@@ -16,7 +16,7 @@ export interface TableRowProps<T> {
   selected: boolean;
   size?: 'small' | 'medium';
   index: number;
-  onSelect?: (row: T) => void;
+  onSelect?: (checked: boolean, row: T) => void;
 }
 
 function EnhancedTableRow<T>({
@@ -31,7 +31,7 @@ function EnhancedTableRow<T>({
 }: TableRowProps<T>) {
   const handleSelect = () => {
     if (onSelect) {
-      onSelect(row);
+      onSelect(!selected, row);
     }
   };
 

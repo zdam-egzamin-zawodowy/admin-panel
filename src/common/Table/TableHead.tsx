@@ -13,7 +13,7 @@ import {
 export interface TableHeadProps {
   columns: Column[];
   selection: boolean;
-  onSelectAll?: () => void;
+  onSelectAll?: (checked: boolean) => void;
   allSelected: boolean;
   orderDirection: OrderDirection;
   orderBy: string;
@@ -48,7 +48,7 @@ function TableHead({
 
   const handleSelectAll = () => {
     if (onSelectAll) {
-      onSelectAll();
+      onSelectAll(!allSelected);
     }
   };
 
