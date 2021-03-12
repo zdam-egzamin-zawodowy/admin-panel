@@ -15,3 +15,11 @@ export const MUTATION_UPDATE_USER = gql`
     }
   }
 `;
+
+export const MUTATION_DELETE_USERS = gql`
+  mutation deleteUsers($ids: [ID!]!) {
+    deleteUsers(ids: $ids) {
+      id
+    }
+  }
+`;

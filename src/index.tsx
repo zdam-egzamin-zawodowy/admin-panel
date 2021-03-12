@@ -20,7 +20,11 @@ ReactDOM.render(
       <ThemeProvider>
         <AuthProvider tokenStorage={tokenStorage}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <SnackbarProvider maxSnack={3}>
+            <SnackbarProvider
+              maxSnack={3}
+              autoHideDuration={3000}
+              preventDuplicate
+            >
               <App />
             </SnackbarProvider>
           </QueryParamProvider>

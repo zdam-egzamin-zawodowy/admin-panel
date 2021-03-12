@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ApolloError, useMutation } from '@apollo/client';
+import { useUpdateEffect } from 'react-use';
 import {
   NumberParam,
   StringParam,
@@ -8,24 +9,35 @@ import {
 } from 'use-query-params';
 import { useSnackbar } from 'notistack';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
+import { useAuth } from 'libs/auth';
 import useUsers from './UsersPage.useUsers';
 import { validateRowsPerPage } from 'common/Table/helpers';
-import { MUTATION_CREATE_USER, MUTATION_UPDATE_USER } from './mutations';
+import {
+  MUTATION_CREATE_USER,
+  MUTATION_UPDATE_USER,
+  MUTATION_DELETE_USERS,
+} from './mutations';
+
 import { COLUMNS, DEFAULT_SORT, DialogType } from './constants';
 import {
   Maybe,
   MutationCreateUserArgs,
+  MutationDeleteUsersArgs,
   MutationUpdateUserArgs,
   User,
   UserInput,
 } from 'libs/graphql/types';
-
-import { Container, IconButton, Paper } from '@material-ui/core';
+import {
+  Button,
+  Container,
+  IconButton,
+  Paper,
+  Snackbar,
+} from '@material-ui/core';
 import { Edit as EditIcon } from '@material-ui/icons';
 import Table from 'common/Table/Table';
 import TableToolbar from './components/TableToolbar/TableToolbar';
 import FormDialog from './components/FormDialog/FormDialog';
-import { useUpdateEffect } from 'react-use';
 
 const UsersPage = () => {
   const [createUserMutation] = useMutation<any, MutationCreateUserArgs>(
@@ -36,9 +48,14 @@ const UsersPage = () => {
     MUTATION_UPDATE_USER,
     { ignoreResults: true }
   );
+  const [deleteUsersMutation] = useMutation<any, MutationDeleteUsersArgs>(
+    MUTATION_DELETE_USERS,
+    { ignoreResults: true }
+  );
   const [dialogType, setDialogType] = useState<DialogType>(DialogType.None);
   const [userBeingEdited, setUserBeingEdited] = useState<Maybe<User>>(null);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const authState = useAuth();
   const snackbar = useSnackbar();
   const [{ page, sort, search, ...rest }, setQueryParams] = useQueryParams({
     limit: NumberParam,
@@ -70,6 +87,12 @@ const UsersPage = () => {
         });
       }
       await refetch();
+      snackbar.enqueueSnackbar(
+        dialogType === DialogType.Create
+          ? 'Pomyślnie utworzono użytkownika.'
+          : 'Zapisano zmiany.',
+        { variant: 'success' }
+      );
       return true;
     } catch (e) {
       snackbar.enqueueSnackbar(
@@ -80,6 +103,30 @@ const UsersPage = () => {
       );
     }
     return false;
+  };
+
+  const handleDeleteUsers = async () => {
+    if (!window.confirm('Czy na pewno chcesz usunąć tych użytkowników?')) {
+      return;
+    }
+    try {
+      const ids = selectedUsers.map(user => user.id);
+      if (ids.includes(authState.user?.id ?? -1)) {
+        throw new Error('Nie możesz usunąć swojego konta.');
+      }
+      await deleteUsersMutation({ variables: { ids } });
+      await refetch();
+      snackbar.enqueueSnackbar(`Usuwanie przebiegło pomyślnie.`, {
+        variant: 'success',
+      });
+    } catch (e) {
+      snackbar.enqueueSnackbar(
+        e instanceof ApolloError && e.graphQLErrors.length > 0
+          ? e.graphQLErrors[0].message
+          : e.message,
+        { variant: 'error' }
+      );
+    }
   };
 
   const handleSelect = (checked: boolean, items: User[]) => {
@@ -157,6 +204,22 @@ const UsersPage = () => {
         user={userBeingEdited as UserInput}
         onSubmit={handleFormDialogSubmit}
         onClose={() => setDialogType(DialogType.None)}
+      />
+      <Snackbar
+        open={selectedUsers.length > 0}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        message={`Wybrani użytkownicy: ${selectedUsers.length}`}
+        action={
+          <>
+            <Button onClick={handleDeleteUsers} color="secondary">
+              Usuń
+            </Button>
+            <Button color="secondary">Aktywuj</Button>
+            <Button color="secondary" onClick={() => setSelectedUsers([])}>
+              Anuluj
+            </Button>
+          </>
+        }
       />
     </Container>
   );
