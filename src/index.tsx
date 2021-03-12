@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { SnackbarProvider } from 'material-ui-snackbar-provider';
+import { SnackbarProvider } from 'notistack';
 import { QueryParamProvider } from 'use-query-params';
 import App from './features/App';
 import { AuthProvider } from './libs/auth';
@@ -20,12 +20,7 @@ ReactDOM.render(
       <ThemeProvider>
         <AuthProvider tokenStorage={tokenStorage}>
           <QueryParamProvider ReactRouterRoute={Route}>
-            <SnackbarProvider
-              SnackbarProps={{
-                autoHideDuration: 4000,
-                anchorOrigin: { vertical: 'top', horizontal: 'center' },
-              }}
-            >
+            <SnackbarProvider maxSnack={3}>
               <App />
             </SnackbarProvider>
           </QueryParamProvider>

@@ -6,7 +6,7 @@ import {
   useQueryParams,
   withDefault,
 } from 'use-query-params';
-import { useSnackbar } from 'material-ui-snackbar-provider';
+import { useSnackbar } from 'notistack';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import useUsers from './UsersPage.useUsers';
 import { validateRowsPerPage } from 'common/Table/helpers';
@@ -72,10 +72,11 @@ const UsersPage = () => {
       await refetch();
       return true;
     } catch (e) {
-      snackbar.showMessage(
+      snackbar.enqueueSnackbar(
         e instanceof ApolloError && e.graphQLErrors.length > 0
           ? e.graphQLErrors[0].message
-          : e.message
+          : e.message,
+        { variant: 'error' }
       );
     }
     return false;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSnackbar } from 'material-ui-snackbar-provider';
+import { useSnackbar } from 'notistack';
 import { ApolloError } from '@apollo/client';
 import { useAuth } from 'libs/auth';
 import { Role } from 'libs/graphql/types';
@@ -40,12 +40,15 @@ const SignInPage = () => {
         }
         return true;
       });
-      snackbar.showMessage('Logowanie przebiegło pomyślnie.');
+      snackbar.enqueueSnackbar('Logowanie przebiegło pomyślnie.', {
+        variant: 'success',
+      });
     } catch (e) {
-      snackbar.showMessage(
+      snackbar.enqueueSnackbar(
         e instanceof ApolloError && e.graphQLErrors.length > 0
           ? e.graphQLErrors[0].message
-          : e.message
+          : e.message,
+        { variant: 'error' }
       );
       setIsSubmitting(false);
     }
