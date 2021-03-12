@@ -12,7 +12,11 @@ import {
   Divider,
 } from '@material-ui/core';
 import useStyles from './useStyles';
-import { Group as GroupIcon, Work as WorkIcon } from '@material-ui/icons';
+import {
+  Group as GroupIcon,
+  Work as WorkIcon,
+  Description as DescriptionIcon,
+} from '@material-ui/icons';
 import Nav from './components/Nav/Nav';
 import CurrentUser from './components/CurrentUser/CurrentUser';
 
@@ -40,6 +44,12 @@ const Sidebar = ({ className, open, variant, onClose, onOpen }: Props) => {
       to: Route.ProfessionsPage,
       exact: true,
       Icon: <WorkIcon color="inherit" />,
+    },
+    {
+      name: 'Kwalifikacje',
+      to: Route.QualificationsPage,
+      exact: true,
+      Icon: <DescriptionIcon color="inherit" />,
     },
   ];
 
