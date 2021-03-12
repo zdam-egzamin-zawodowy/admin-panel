@@ -23,3 +23,11 @@ export const MUTATION_DELETE_USERS = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_MANY_USERS = gql`
+  mutation updateManyUsers($ids: [ID!]!, $input: UpdateManyUsersInput!) {
+    updateManyUsers(ids: $ids, input: $input) {
+      id
+    }
+  }
+`;

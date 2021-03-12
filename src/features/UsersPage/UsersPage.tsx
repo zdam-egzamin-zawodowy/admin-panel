@@ -16,6 +16,7 @@ import {
   MUTATION_CREATE_USER,
   MUTATION_UPDATE_USER,
   MUTATION_DELETE_USERS,
+  MUTATION_UPDATE_MANY_USERS,
 } from './mutations';
 
 import { COLUMNS, DEFAULT_SORT, DialogType } from './constants';
@@ -23,6 +24,7 @@ import {
   Maybe,
   MutationCreateUserArgs,
   MutationDeleteUsersArgs,
+  MutationUpdateManyUsersArgs,
   MutationUpdateUserArgs,
   User,
   UserInput,
@@ -52,6 +54,10 @@ const UsersPage = () => {
     MUTATION_DELETE_USERS,
     { ignoreResults: true }
   );
+  const [updateManyUsersMutation] = useMutation<
+    any,
+    MutationUpdateManyUsersArgs
+  >(MUTATION_UPDATE_MANY_USERS, { ignoreResults: true });
   const [dialogType, setDialogType] = useState<DialogType>(DialogType.None);
   const [userBeingEdited, setUserBeingEdited] = useState<Maybe<User>>(null);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
@@ -106,7 +112,7 @@ const UsersPage = () => {
   };
 
   const handleDeleteUsers = async () => {
-    if (!window.confirm('Czy na pewno chcesz usunąć tych użytkowników?')) {
+    if (!window.confirm('Czy na pewno chcesz usunąć wybranych użytkowników?')) {
       return;
     }
     try {
@@ -117,6 +123,31 @@ const UsersPage = () => {
       await deleteUsersMutation({ variables: { ids } });
       await refetch();
       snackbar.enqueueSnackbar(`Usuwanie przebiegło pomyślnie.`, {
+        variant: 'success',
+      });
+    } catch (e) {
+      snackbar.enqueueSnackbar(
+        e instanceof ApolloError && e.graphQLErrors.length > 0
+          ? e.graphQLErrors[0].message
+          : e.message,
+        { variant: 'error' }
+      );
+    }
+  };
+
+  const handleActivateUsers = async () => {
+    if (
+      !window.confirm('Czy na pewno chcesz aktywować wybranych użytkowników?')
+    ) {
+      return;
+    }
+    try {
+      const ids = selectedUsers.map(user => user.id);
+      await updateManyUsersMutation({
+        variables: { ids, input: { activated: true } },
+      });
+      await refetch();
+      snackbar.enqueueSnackbar(`Aktywacja kont przebiegła pomyślnie.`, {
         variant: 'success',
       });
     } catch (e) {
@@ -214,7 +245,9 @@ const UsersPage = () => {
             <Button onClick={handleDeleteUsers} color="secondary">
               Usuń
             </Button>
-            <Button color="secondary">Aktywuj</Button>
+            <Button onClick={handleActivateUsers} color="secondary">
+              Aktywuj
+            </Button>
             <Button color="secondary" onClick={() => setSelectedUsers([])}>
               Anuluj
             </Button>
