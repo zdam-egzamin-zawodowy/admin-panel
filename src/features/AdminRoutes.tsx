@@ -1,5 +1,5 @@
-import { Switch, Route } from 'react-router-dom';
-import { ROUTE } from '../config/routing';
+import { Switch, Route as RRDRoute } from 'react-router-dom';
+import { Route } from '../config/routing';
 import AppLayout from 'common/AppLayout/AppLayout';
 import DashboardPage from './DashboardPage/DashboardPage';
 import UsersPage from './UsersPage/UsersPage';
@@ -9,15 +9,15 @@ function AdminRoutes() {
   return (
     <AppLayout>
       <Switch>
-        <Route exact path={ROUTE.DASHBOARD_PAGE}>
+        <RRDRoute exact path={Route.DashboardPage}>
           <DashboardPage />
-        </Route>
-        <Route exact path={ROUTE.USERS_PAGE}>
+        </RRDRoute>
+        <RRDRoute exact path={Route.UsersPage}>
           <UsersPage />
-        </Route>{' '}
-        <Route exact path={ROUTE.PROFESSIONS_PAGE}>
+        </RRDRoute>
+        <RRDRoute exact path={Route.ProfessionsPage}>
           <ProfessionsPage />
-        </Route>
+        </RRDRoute>
       </Switch>
     </AppLayout>
   );

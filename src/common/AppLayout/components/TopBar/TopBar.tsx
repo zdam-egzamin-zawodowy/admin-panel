@@ -1,7 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import { useAuth } from 'libs/auth';
-import { ROUTE } from 'config/routing';
+import { Route } from 'config/routing';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -37,7 +37,7 @@ const TopBar = ({ className, openSidebar }: Props) => {
             </Hidden>
             <Hidden xsDown>
               <Typography variant="h4">
-                <Link color="inherit" to={ROUTE.DASHBOARD_PAGE}>
+                <Link color="inherit" to={Route.DashboardPage}>
                   Zdam Egzamin Zawodowy
                 </Link>
               </Typography>

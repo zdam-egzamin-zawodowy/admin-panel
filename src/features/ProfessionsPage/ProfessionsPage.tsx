@@ -108,7 +108,7 @@ const ProfessionsPage = () => {
   };
 
   const handleDeleteProfessions = async () => {
-    if (!window.confirm('Czy na pewno chcesz usunąć wybranych zawody?')) {
+    if (!window.confirm('Czy na pewno chcesz usunąć wybrane zawody?')) {
       return;
     }
     try {

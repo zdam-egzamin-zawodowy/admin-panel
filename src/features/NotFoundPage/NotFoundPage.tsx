@@ -1,5 +1,5 @@
 import React from 'react';
-import { ROUTE } from 'config/routing';
+import { Route } from 'config/routing';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Container, Typography } from '@material-ui/core';
@@ -19,7 +19,7 @@ const NotFoundPage = () => {
           który nie istnieje.
         </Typography>
         <Typography variant="h4">
-          <Link to={ROUTE.SIGN_IN_PAGE}>Wróć na stronę główną</Link>
+          <Link to={Route.SignInPage}>Wróć na stronę główną</Link>
         </Typography>
       </Container>
     </main>
