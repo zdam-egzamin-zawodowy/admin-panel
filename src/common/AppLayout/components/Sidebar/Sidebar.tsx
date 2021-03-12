@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { ROUTE } from 'config/routing';
-import { Route } from './components/Nav/types';
+import { Route } from 'config/routing';
+import { Route as NavRoute } from './components/Nav/types';
 import { useTheme } from '@material-ui/core/styles';
 
 import {
@@ -15,6 +15,7 @@ import useStyles from './useStyles';
 import {
   Dashboard as DashboardIcon,
   Group as GroupIcon,
+  Work as WorkIcon,
 } from '@material-ui/icons';
 import Nav from './components/Nav/Nav';
 import CurrentUser from './components/CurrentUser/CurrentUser';
@@ -31,18 +32,24 @@ const Sidebar = ({ className, open, variant, onClose, onOpen }: Props) => {
   const classes = useStyles();
   const theme = useTheme();
   const { pathname } = useLocation();
-  const routes: Route[] = [
+  const routes: NavRoute[] = [
     {
       name: 'Dashboard',
-      to: ROUTE.DASHBOARD_PAGE,
+      to: Route.DashboardPage,
       Icon: <DashboardIcon color="inherit" />,
       exact: true,
     },
     {
       name: 'Użytkownicy',
-      to: ROUTE.USERS_PAGE,
+      to: Route.UsersPage,
       exact: true,
       Icon: <GroupIcon color="inherit" />,
+    },
+    {
+      name: 'Zawody',
+      to: Route.ProfessionsPage,
+      exact: true,
+      Icon: <WorkIcon color="inherit" />,
     },
   ];
 

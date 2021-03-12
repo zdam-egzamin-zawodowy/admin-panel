@@ -1,10 +1,11 @@
-export const ROUTE = {
-  SIGN_IN_PAGE: '/',
-  DASHBOARD_PAGE: '/dashboard',
-  USERS_PAGE: '/users',
-};
+export enum Route {
+  SignInPage = '/',
+  DashboardPage = '/dashboard',
+  UsersPage = '/users',
+  ProfessionsPage = '/professions',
+}
 
-export const PUBLIC_ROUTES = [ROUTE.SIGN_IN_PAGE];
-export const ADMIN_ROUTES = Object.values(ROUTE).filter(
-  route => !PUBLIC_ROUTES.includes(route)
+export const PUBLIC_ROUTES = [Route.SignInPage];
+export const ADMIN_ROUTES = Object.values(Route).filter(
+  route => !PUBLIC_ROUTES.includes(route as Route)
 );

@@ -1,19 +1,19 @@
-import { Redirect, Route, RouteProps } from 'react-router-dom';
+import { Redirect, Route as RRDRoute, RouteProps } from 'react-router-dom';
 import { isNil } from 'lodash';
 import { useAuth } from '../auth';
-import { ROUTE } from '../../config/routing';
+import { Route } from '../../config/routing';
 import { Role } from '../graphql/types';
 
 const PublicRoute = ({ children, ...rest }: RouteProps) => {
   const { user } = useAuth();
   return (
-    <Route {...rest}>
+    <RRDRoute {...rest}>
       {isNil(user) || user.role !== Role.Admin ? (
         children
       ) : (
-        <Redirect to={ROUTE.DASHBOARD_PAGE} />
+        <Redirect to={Route.DashboardPage} />
       )}
-    </Route>
+    </RRDRoute>
   );
 };
 

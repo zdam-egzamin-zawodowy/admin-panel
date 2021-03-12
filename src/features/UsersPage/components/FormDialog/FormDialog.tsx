@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { pick } from 'lodash';
 import isEmail from 'validator/es/lib/isEmail';
@@ -27,7 +28,6 @@ import {
   RadioGroup,
   TextField,
 } from '@material-ui/core';
-import { useState } from 'react';
 
 export interface FormDialogProps extends Pick<DialogProps, 'open'> {
   user?: UserInput;

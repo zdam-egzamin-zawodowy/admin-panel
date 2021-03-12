@@ -94,7 +94,7 @@ function Table<T>({
               );
             }
           }}
-          allSelected={selected?.length === data.length}
+          allSelected={selected?.length === data.length && data.length > 0}
         />
         <TableBody>
           {loading ? (
