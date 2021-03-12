@@ -37,3 +37,8 @@ export const COLUMNS: Column<User>[] = [
     type: 'datetime',
   },
 ];
+export enum DialogType {
+  Create = 'create',
+  Edit = 'edit',
+  None = '',
+}

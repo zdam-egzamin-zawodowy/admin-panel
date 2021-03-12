@@ -8,23 +8,23 @@ const useUsers = (
   sort: string,
   search: string
 ) => {
-  const { data, loading } = useQuery<Pick<Query, 'users'>, QueryUsersArgs>(
-    QUERY_USERS,
-    {
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        offset: page * limit,
-        sort: [sort],
-        limit,
-        filter: {
-          or: {
-            displayNameIEQ: '%' + search + '%',
-            emailIEQ: '%' + search + '%',
-          },
+  const { data, loading, refetch } = useQuery<
+    Pick<Query, 'users'>,
+    QueryUsersArgs
+  >(QUERY_USERS, {
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      offset: page * limit,
+      sort: [sort],
+      limit,
+      filter: {
+        or: {
+          displayNameIEQ: '%' + search + '%',
+          emailIEQ: '%' + search + '%',
         },
       },
-    }
-  );
+    },
+  });
 
   return {
     users: data?.users.items ?? [],
@@ -32,6 +32,7 @@ const useUsers = (
       return this.users.length === 0 && loading;
     },
     total: data?.users.total ?? 0,
+    refetch,
   };
 };
 

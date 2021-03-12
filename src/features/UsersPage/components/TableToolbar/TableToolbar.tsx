@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDebounce } from 'react-use';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,9 +10,14 @@ import SearchInput from 'common/Form/SearchInput';
 export interface TableToolbarProps {
   search: string;
   onChangeSearchValue: (search: string) => void;
+  onClickCreateUser: () => void;
 }
 
-const TableToolbar = ({ search, onChangeSearchValue }: TableToolbarProps) => {
+const TableToolbar = ({
+  search,
+  onChangeSearchValue,
+  onClickCreateUser,
+}: TableToolbarProps) => {
   const classes = useStyles();
   const [_search, setSearch] = useState<string>(search);
   useDebounce(
@@ -35,7 +40,7 @@ const TableToolbar = ({ search, onChangeSearchValue }: TableToolbarProps) => {
         }}
       />
       <Tooltip title="Utwórz użykownika">
-        <IconButton>
+        <IconButton onClick={onClickCreateUser}>
           <AddIcon />
         </IconButton>
       </Tooltip>
