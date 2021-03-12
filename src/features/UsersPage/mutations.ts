@@ -7,3 +7,11 @@ export const MUTATION_CREATE_USER = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_USER = gql`
+  mutation updateUser($id: ID!, $input: UserInput!) {
+    updateUser(id: $id, input: $input) {
+      id
+    }
+  }
+`;

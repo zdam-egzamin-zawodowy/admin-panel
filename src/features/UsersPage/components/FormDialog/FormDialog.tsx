@@ -37,9 +37,7 @@ export interface FormDialogProps extends Pick<DialogProps, 'open'> {
 
 const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
   const editMode = Boolean(user);
-  const { register, handleSubmit, errors } = useForm<UserInput>({
-    defaultValues: user,
-  });
+  const { register, handleSubmit, errors } = useForm<UserInput>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const classes = useStyles();
 
@@ -52,10 +50,9 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
         )
       : data;
     const success = await onSubmit(filtered);
+    setIsSubmitting(false);
     if (success) {
       onClose();
-    } else {
-      setIsSubmitting(false);
     }
   };
 
@@ -75,6 +72,7 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
             fullWidth
             label="Nazwa użytkownika"
             name="displayName"
+            defaultValue={user?.displayName}
             inputRef={register({
               required: 'Te pole jest wymagane.',
               minLength: {
@@ -93,6 +91,7 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
             fullWidth
             label="Adres e-mail"
             name="email"
+            defaultValue={user?.email}
             inputRef={register({
               required: 'Te pole jest wymagane.',
               validate: (email: string) => {
@@ -110,7 +109,7 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
             type="password"
             name="password"
             inputRef={register({
-              required: 'Te pole jest wymagane.',
+              required: editMode ? false : 'Te pole jest wymagane.',
               minLength: {
                 value: MIN_PASSWORD_LENGTH,
                 message: `Hasło musi zawierać co najmniej ${MIN_PASSWORD_LENGTH} znaków.`,
@@ -125,7 +124,7 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
           />
           <FormControl>
             <FormLabel>Rola</FormLabel>
-            <RadioGroup name="role" defaultValue={Role.User}>
+            <RadioGroup name="role" defaultValue={user?.role ?? Role.User}>
               {[Role.Admin, Role.User].map(role => {
                 return (
                   <FormControlLabel
@@ -141,7 +140,13 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
           </FormControl>
           <FormGroup>
             <FormControlLabel
-              control={<Checkbox inputRef={register} name="activated" />}
+              control={
+                <Checkbox
+                  inputRef={register}
+                  name="activated"
+                  defaultChecked={user?.activated ?? false}
+                />
+              }
               label="Aktywowany"
             />
           </FormGroup>

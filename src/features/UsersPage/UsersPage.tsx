@@ -7,7 +7,13 @@ import {
 } from 'use-query-params';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import useUsers from './UsersPage.useUsers';
-import { MutationCreateUserArgs, UserInput } from 'libs/graphql/types';
+import {
+  Maybe,
+  MutationCreateUserArgs,
+  MutationUpdateUserArgs,
+  User,
+  UserInput,
+} from 'libs/graphql/types';
 import { validateRowsPerPage } from 'common/Table/helpers';
 import { COLUMNS, DEFAULT_SORT, DialogType } from './constants';
 
@@ -17,7 +23,7 @@ import Table from 'common/Table/Table';
 import TableToolbar from './components/TableToolbar/TableToolbar';
 import FormDialog from './components/FormDialog/FormDialog';
 import { ApolloError, useMutation } from '@apollo/client';
-import { MUTATION_CREATE_USER } from './mutations';
+import { MUTATION_CREATE_USER, MUTATION_UPDATE_USER } from './mutations';
 import { useSnackbar } from 'material-ui-snackbar-provider';
 
 const UsersPage = () => {
@@ -25,7 +31,12 @@ const UsersPage = () => {
     MUTATION_CREATE_USER,
     { ignoreResults: true }
   );
+  const [updateUserMutation] = useMutation<any, MutationUpdateUserArgs>(
+    MUTATION_UPDATE_USER,
+    { ignoreResults: true }
+  );
   const [dialogType, setDialogType] = useState<DialogType>(DialogType.None);
+  const [userBeingEdited, setUserBeingEdited] = useState<Maybe<User>>(null);
   const snackbar = useSnackbar();
   const [{ page, sort, search, ...rest }, setQueryParams] = useQueryParams({
     limit: NumberParam,
@@ -41,9 +52,15 @@ const UsersPage = () => {
     search
   );
 
-  const handleCreateUser = async (input: UserInput) => {
+  const handleFormDialogSubmit = async (input: UserInput) => {
     try {
-      await createUserMutation({ variables: { input } });
+      if (dialogType === DialogType.Create) {
+        await createUserMutation({ variables: { input } });
+      } else {
+        await updateUserMutation({
+          variables: { input, id: userBeingEdited?.id ?? -1 },
+        });
+      }
       await refetch();
       return true;
     } catch (e) {
@@ -61,7 +78,10 @@ const UsersPage = () => {
       <Paper>
         <TableToolbar
           search={search}
-          onClickCreateUser={() => setDialogType(DialogType.Create)}
+          onClickCreateUser={() => {
+            setUserBeingEdited(null);
+            setDialogType(DialogType.Create);
+          }}
           onChangeSearchValue={val => {
             setQueryParams({ page: 0, search: val });
           }}
@@ -74,7 +94,12 @@ const UsersPage = () => {
             {
               icon: row => {
                 return (
-                  <IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setUserBeingEdited(row);
+                      setDialogType(DialogType.Edit);
+                    }}
+                  >
                     <EditIcon />
                   </IconButton>
                 );
@@ -108,7 +133,8 @@ const UsersPage = () => {
         open={
           dialogType === DialogType.Create || dialogType === DialogType.Edit
         }
-        onSubmit={handleCreateUser}
+        user={userBeingEdited as UserInput}
+        onSubmit={handleFormDialogSubmit}
         onClose={() => setDialogType(DialogType.None)}
       />
     </Container>

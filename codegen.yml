@@ -7,3 +7,5 @@ generates:
       - "typescript-operations"
     config:
       skipTypename: true
+      scalars:
+        ID: number
