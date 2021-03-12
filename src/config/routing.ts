@@ -2,6 +2,7 @@ export enum Route {
   SignInPage = '/',
   UsersPage = '/users',
   ProfessionsPage = '/professions',
+  QualificationsPage = '/qualifications',
 }
 
 export const PUBLIC_ROUTES = [Route.SignInPage];
