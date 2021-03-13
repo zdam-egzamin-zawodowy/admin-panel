@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { pick } from 'lodash';
-import { MAX_NAME_LENGTH, FORMULAS } from './constants';
-import { QualificationInput } from 'libs/graphql/types';
+import { useEffect, useMemo } from 'react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { omit, pick } from 'lodash';
+import useProfessionAutocomplete from './FormDialog.useProfessionAutocomplete.js';
+import { FORMULAS, MAX_NAME_LENGTH } from './constants';
+import { Maybe, Qualification, QualificationInput } from 'libs/graphql/types';
+import { ExtendedProfession, Input } from './types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,9 +18,10 @@ import {
   MenuItem,
   TextField,
 } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 
 export interface FormDialogProps extends Pick<DialogProps, 'open'> {
-  qualification?: QualificationInput;
+  qualification?: Maybe<Qualification>;
   onClose: () => void;
   onSubmit: (input: QualificationInput) => Promise<boolean> | boolean;
 }
@@ -34,20 +38,78 @@ const FormDialog = ({
     handleSubmit,
     errors,
     control,
-  } = useForm<QualificationInput>({});
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    reset,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm<Input>({});
+  const { fields: selectedProfessions } = useFieldArray<
+    ExtendedProfession,
+    'key'
+  >({
+    control,
+    name: 'professions',
+    keyName: 'key',
+  });
+  const {
+    professions,
+    loading,
+    isLoadingSuggestions,
+    suggestions,
+    setSearch,
+  } = useProfessionAutocomplete({
+    qualificationID: qualification?.id,
+    omit: selectedProfessions.map(profession => profession?.id ?? 0),
+  });
   const classes = useStyles();
-
-  const _onSubmit = async (data: QualificationInput) => {
-    setIsSubmitting(true);
-    const filtered = editMode
-      ? pick(
-          data,
-          Object.keys(data).filter(key => data[key as keyof QualificationInput])
+  const autocompleteOptions:
+    | typeof selectedProfessions
+    | typeof suggestions = useMemo(() => {
+    return [
+      ...suggestions
+        .filter(
+          profession =>
+            !selectedProfessions.some(
+              otherProfession => otherProfession.id === profession.id
+            )
         )
-      : data;
-    const success = await onSubmit(filtered);
-    setIsSubmitting(false);
+        .map(p => ({ ...p, disabled: false })),
+      ...selectedProfessions.map(p => ({
+        ...p,
+        disabled: true,
+      })),
+    ];
+  }, [suggestions, selectedProfessions]);
+
+  useEffect(() => {
+    reset({
+      professions,
+    });
+  }, [professions, reset]);
+
+  const prepateDataBeforeSave = (data: Input): QualificationInput => {
+    return {
+      ...pick(data, ['name', 'description', 'formula', 'code']),
+      associateProfession: data.professions
+        .filter(
+          profession =>
+            !professions.some(
+              otherProfession => otherProfession.id === profession.id
+            )
+        )
+        .map(profession => profession.id),
+      dissociateProfession: professions
+        .filter(
+          profession =>
+            !data.professions.some(
+              otherProfession => otherProfession.id === profession.id
+            )
+        )
+        .map(profession => profession.id),
+    };
+  };
+
+  const _onSubmit = async (data: Input) => {
+    const success = await onSubmit(prepateDataBeforeSave(data));
     if (success) {
       onClose();
     }
@@ -113,6 +175,56 @@ const FormDialog = ({
             inputRef={register}
             multiline
           />
+          {!loading && (
+            <Autocomplete
+              multiple
+              options={autocompleteOptions}
+              getOptionLabel={option => option?.name ?? ''}
+              loading={isLoadingSuggestions}
+              value={selectedProfessions}
+              getOptionDisabled={option => !!option.disabled}
+              onChange={(_, opts, reason) => {
+                setValue(
+                  'professions',
+                  opts.map(profession => omit(profession, 'key'))
+                );
+              }}
+              getOptionSelected={(option, value) =>
+                option && value && option.id === value.id
+              }
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  label="Zawody"
+                  onChange={e => {
+                    setSearch(e.target.value);
+                  }}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {isLoadingSuggestions ? (
+                          <CircularProgress color="inherit" size={20} />
+                        ) : null}
+                      </>
+                    ),
+                  }}
+                />
+              )}
+            />
+          )}
+          {selectedProfessions.map((profession, index) => {
+            return (
+              <input
+                type="hidden"
+                key={profession.id}
+                name={`professions[${index}].id`}
+                ref={register({ valueAsNumber: true })}
+                defaultValue={profession.id}
+              />
+            );
+          })}
         </DialogContent>
         <DialogActions>
           <Button

@@ -200,7 +200,7 @@ const QualificationsPage = () => {
         open={
           dialogType === DialogType.Create || dialogType === DialogType.Edit
         }
-        qualification={qualificationBeingEdited as QualificationInput}
+        qualification={qualificationBeingEdited}
         onSubmit={handleFormDialogSubmit}
         onClose={() => setDialogType(DialogType.None)}
       />
