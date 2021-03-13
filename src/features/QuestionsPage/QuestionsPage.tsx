@@ -106,7 +106,7 @@ const QuestionsPage = () => {
   };
 
   const handleDeleteQuestions = async () => {
-    if (!window.confirm('Czy na pewno chcesz usunąć wybrane zawody?')) {
+    if (!window.confirm('Czy na pewno chcesz usunąć wybrane pytania?')) {
       return;
     }
     try {
