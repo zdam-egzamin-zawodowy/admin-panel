@@ -1,5 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
 import { pick } from 'lodash';
+import useQualifications from './FormDialog.useQualifications';
 import { QuestionInput, Question, Maybe, Answer } from 'libs/graphql/types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,7 +15,7 @@ import {
   TextField,
 } from '@material-ui/core';
 
-const ANSWERS = Object.keys(Answer);
+const ANSWERS = Object.values(Answer);
 
 export interface FormDialogProps extends Pick<DialogProps, 'open'> {
   question?: Maybe<Question>;
@@ -31,6 +32,10 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
     control,
     formState: { isSubmitting },
   } = useForm<QuestionInput>({});
+  const {
+    qualifications,
+    loading: loadingQualifications,
+  } = useQualifications();
   const classes = useStyles();
 
   const _onSubmit = async (data: QuestionInput) => {
@@ -108,7 +113,6 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
           {ANSWERS.map(answer => {
             const upper = answer.toUpperCase();
             return (
-              //(question as any)[`answer${upper}`]
               <TextField
                 fullWidth
                 key={upper}
@@ -128,6 +132,28 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
               />
             );
           })}
+          {!loadingQualifications && (
+            <Controller
+              name="qualificationID"
+              defaultValue={
+                question?.qualification?.id ?? qualifications[0]?.id
+              }
+              control={control}
+              rules={{
+                valueAsNumber: true,
+                required: 'Musisz wybrać kwalifikację.',
+              }}
+              as={
+                <TextField select fullWidth label="Kwalifikacja">
+                  {qualifications.map(qualification => (
+                    <MenuItem key={qualification.id} value={qualification.id}>
+                      {qualification.name} ({qualification.code})
+                    </MenuItem>
+                  ))}
+                </TextField>
+              }
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button
