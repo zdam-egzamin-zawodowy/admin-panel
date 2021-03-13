@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { pick } from 'lodash';
 import isEmail from 'validator/es/lib/isEmail';
@@ -37,12 +36,15 @@ export interface FormDialogProps extends Pick<DialogProps, 'open'> {
 
 const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
   const editMode = Boolean(user);
-  const { register, handleSubmit, errors } = useForm<UserInput>({});
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState: { isSubmitting },
+  } = useForm<UserInput>({});
   const classes = useStyles();
 
   const _onSubmit = async (data: UserInput) => {
-    setIsSubmitting(true);
     const filtered = editMode
       ? pick(
           data,
@@ -50,7 +52,6 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
         )
       : data;
     const success = await onSubmit(filtered);
-    setIsSubmitting(false);
     if (success) {
       onClose();
     }

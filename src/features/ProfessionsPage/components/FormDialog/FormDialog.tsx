@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { pick } from 'lodash';
 import { MAX_NAME_LENGTH } from './constants';
@@ -28,12 +27,15 @@ const FormDialog = ({
   onSubmit,
 }: FormDialogProps) => {
   const editMode = Boolean(profession);
-  const { register, handleSubmit, errors } = useForm<ProfessionInput>({});
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState: { isSubmitting },
+  } = useForm<ProfessionInput>({});
   const classes = useStyles();
 
   const _onSubmit = async (data: ProfessionInput) => {
-    setIsSubmitting(true);
     const filtered = editMode
       ? pick(
           data,
@@ -41,7 +43,6 @@ const FormDialog = ({
         )
       : data;
     const success = await onSubmit(filtered);
-    setIsSubmitting(false);
     if (success) {
       onClose();
     }

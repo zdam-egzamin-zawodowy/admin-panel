@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 import { ApolloError } from '@apollo/client';
@@ -25,14 +24,17 @@ type FormData = {
 };
 
 const SignInPage = () => {
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const snackbar = useSnackbar();
   const { signIn } = useAuth();
-  const { register, errors, handleSubmit } = useForm<FormData>();
+  const {
+    register,
+    errors,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<FormData>();
   const classes = useStyles();
 
   const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
     try {
       await signIn(data.email, data.password, data.staySignedIn, user => {
         if (user.role !== Role.Admin) {
@@ -50,7 +52,6 @@ const SignInPage = () => {
           : e.message,
         { variant: 'error' }
       );
-      setIsSubmitting(false);
     }
   };
 
