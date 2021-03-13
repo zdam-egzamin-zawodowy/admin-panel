@@ -1,10 +1,10 @@
-import { useEffect, useMemo } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { omit, pick } from 'lodash';
 import useProfessionAutocomplete from './FormDialog.useProfessionAutocomplete.js';
 import { FORMULAS, MAX_NAME_LENGTH } from './constants';
 import { Maybe, Qualification, QualificationInput } from 'libs/graphql/types';
-import { ExtendedProfession, Input } from './types';
+import { Input } from './types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -42,43 +42,18 @@ const FormDialog = ({
     setValue,
     formState: { isSubmitting },
   } = useForm<Input>({});
-  const { fields: selectedProfessions } = useFieldArray<
-    ExtendedProfession,
-    'key'
-  >({
-    control,
-    name: 'professions',
-    keyName: 'key',
-  });
   const {
     professions,
     loading,
     isLoadingSuggestions,
-    suggestions,
     setSearch,
+    autocompleteOptions,
+    selectedProfessions,
   } = useProfessionAutocomplete({
     qualificationID: qualification?.id,
-    omit: selectedProfessions.map(profession => profession?.id ?? 0),
+    control: control,
   });
   const classes = useStyles();
-  const autocompleteOptions:
-    | typeof selectedProfessions
-    | typeof suggestions = useMemo(() => {
-    return [
-      ...suggestions
-        .filter(
-          profession =>
-            !selectedProfessions.some(
-              otherProfession => otherProfession.id === profession.id
-            )
-        )
-        .map(p => ({ ...p, disabled: false })),
-      ...selectedProfessions.map(p => ({
-        ...p,
-        disabled: true,
-      })),
-    ];
-  }, [suggestions, selectedProfessions]);
 
   useEffect(() => {
     reset({
@@ -86,7 +61,7 @@ const FormDialog = ({
     });
   }, [professions, reset]);
 
-  const prepateDataBeforeSave = (data: Input): QualificationInput => {
+  const prepareDataBeforeSave = (data: Input): QualificationInput => {
     return {
       ...pick(data, ['name', 'description', 'formula', 'code']),
       associateProfession: data.professions
@@ -109,7 +84,7 @@ const FormDialog = ({
   };
 
   const _onSubmit = async (data: Input) => {
-    const success = await onSubmit(prepateDataBeforeSave(data));
+    const success = await onSubmit(prepareDataBeforeSave(data));
     if (success) {
       onClose();
     }
@@ -183,7 +158,7 @@ const FormDialog = ({
               loading={isLoadingSuggestions}
               value={selectedProfessions}
               getOptionDisabled={option => !!option.disabled}
-              onChange={(_, opts, reason) => {
+              onChange={(_, opts) => {
                 setValue(
                   'professions',
                   opts.map(profession => omit(profession, 'key'))

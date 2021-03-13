@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useApolloClient, useQuery } from '@apollo/client';
+import { Control, useFieldArray } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 import { QUERY_PROFESSIONS } from './queries';
 import {
@@ -12,15 +13,23 @@ import { ExtendedProfession } from './types';
 
 export interface Options {
   qualificationID?: Maybe<Scalars['ID']>;
-  omit?: Scalars['ID'][];
+  control: Control;
 }
 
-const useProfessionAutocomplete = ({ qualificationID, omit = [] }: Options) => {
+const useProfessionAutocomplete = ({ qualificationID, control }: Options) => {
   const [suggestions, setSuggestions] = useState<ExtendedProfession[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState<boolean>(
     false
   );
   const [search, setSearch] = useState<string>('');
+  const { fields: selectedProfessions } = useFieldArray<
+    ExtendedProfession,
+    'key'
+  >({
+    control,
+    name: 'professions',
+    keyName: 'key',
+  });
   const client = useApolloClient();
   const { data, loading } = useQuery<
     Pick<Query, 'professions'>,
@@ -35,6 +44,24 @@ const useProfessionAutocomplete = ({ qualificationID, omit = [] }: Options) => {
     },
   });
   const professions = useMemo(() => data?.professions.items ?? [], [data]);
+  const autocompleteOptions:
+    | typeof selectedProfessions
+    | typeof suggestions = useMemo(() => {
+    return [
+      ...suggestions
+        .filter(
+          profession =>
+            !selectedProfessions.some(
+              otherProfession => otherProfession.id === profession.id
+            )
+        )
+        .map(p => ({ ...p, disabled: false })),
+      ...selectedProfessions.map(p => ({
+        ...p,
+        disabled: true,
+      })),
+    ];
+  }, [suggestions, selectedProfessions]);
 
   const loadSuggestions = async (search: string) => {
     setIsLoadingSuggestions(true);
@@ -46,7 +73,10 @@ const useProfessionAutocomplete = ({ qualificationID, omit = [] }: Options) => {
         query: QUERY_PROFESSIONS,
         fetchPolicy: 'no-cache',
         variables: {
-          filter: { nameIEQ: '%' + search + '%', idNEQ: omit },
+          filter: {
+            nameIEQ: '%' + search + '%',
+            idNEQ: selectedProfessions.map(profession => profession.id ?? 0),
+          },
           limit: 10,
         },
       });
@@ -74,6 +104,8 @@ const useProfessionAutocomplete = ({ qualificationID, omit = [] }: Options) => {
     suggestions,
     setSearch,
     search,
+    autocompleteOptions,
+    selectedProfessions,
   };
 };
 
