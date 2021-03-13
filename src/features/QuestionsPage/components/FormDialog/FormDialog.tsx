@@ -1,7 +1,6 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { pick } from 'lodash';
-import { MAX_NAME_LENGTH } from './constants';
-import { QuestionInput, Question } from 'libs/graphql/types';
+import { QuestionInput, Question, Maybe, Answer } from 'libs/graphql/types';
 
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -11,9 +10,11 @@ import {
   DialogContent,
   DialogProps,
   DialogTitle,
+  MenuItem,
   TextField,
 } from '@material-ui/core';
-import { Maybe } from 'graphql/jsutils/Maybe';
+
+const ANSWERS = Object.keys(Answer);
 
 export interface FormDialogProps extends Pick<DialogProps, 'open'> {
   question?: Maybe<Question>;
@@ -27,6 +28,7 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
     register,
     handleSubmit,
     errors,
+    control,
     formState: { isSubmitting },
   } = useForm<QuestionInput>({});
   const classes = useStyles();
@@ -59,18 +61,73 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
           <TextField
             fullWidth
             label="Treść pytania"
-            name="name"
+            name="content"
+            multiline
             defaultValue={question?.content}
             inputRef={register({
               required: 'Te pole jest wymagane.',
-              maxLength: {
-                value: MAX_NAME_LENGTH,
-                message: `Maksymalna długość nazwy zawodu to ${MAX_NAME_LENGTH} znaki.`,
-              },
             })}
             error={!!errors.content}
             helperText={errors.content?.message ?? ''}
           />
+          <TextField
+            fullWidth
+            label="Z"
+            name="from"
+            defaultValue={question?.from}
+            inputRef={register({
+              required: 'Te pole jest wymagane.',
+            })}
+            error={!!errors.from}
+            helperText={errors.from?.message ?? ''}
+          />
+          <TextField
+            fullWidth
+            label="Wyjaśnienie"
+            name="explanation"
+            multiline
+            defaultValue={question?.explanation}
+            inputRef={register}
+            error={!!errors.explanation}
+            helperText={errors.explanation?.message ?? ''}
+          />
+          <Controller
+            name="correctAnswer"
+            defaultValue={question?.correctAnswer ?? ANSWERS[0]}
+            control={control}
+            as={
+              <TextField select fullWidth label="Poprawna odpowiedź">
+                {ANSWERS.map(answer => (
+                  <MenuItem key={answer} value={answer}>
+                    {answer}
+                  </MenuItem>
+                ))}
+              </TextField>
+            }
+          />
+          {ANSWERS.map(answer => {
+            const upper = answer.toUpperCase();
+            return (
+              //(question as any)[`answer${upper}`]
+              <TextField
+                fullWidth
+                key={upper}
+                label={`Odpowiedź ${upper}`}
+                name={`answer${upper}`}
+                multiline
+                defaultValue={
+                  question ? question[`answer${upper}` as keyof Question] : ''
+                }
+                inputRef={register({
+                  required: 'Te pole jest wymagane.',
+                })}
+                error={!!errors[`answer${upper}` as keyof QuestionInput]}
+                helperText={
+                  errors[`answer${upper}` as keyof QuestionInput]?.message ?? ''
+                }
+              />
+            );
+          })}
         </DialogContent>
         <DialogActions>
           <Button

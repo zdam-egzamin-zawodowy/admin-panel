@@ -10,13 +10,18 @@ export const COLUMNS: Column<Question>[] = [
     label: 'ID',
   },
   {
+    field: 'from',
+    sortable: true,
+    label: 'Z',
+  },
+  {
     field: 'content',
     sortable: true,
     label: 'Treść',
   },
   {
     field: 'qualification',
-    sortable: true,
+    sortable: false,
     label: 'Kwalifikacja',
     valueFormatter: v => {
       return `${v.qualification?.code ?? '-'} (ID: ${
