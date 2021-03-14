@@ -52,6 +52,7 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
     formState: { isSubmitting },
     watch,
     setValue,
+    reset,
   } = useForm<QuestionInput>({});
   const images: Images = watch([
     'image',
@@ -84,7 +85,6 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
   }, [register]);
 
   const _onSubmit = async (data: QuestionInput) => {
-    console.log(data);
     const success = await onSubmit({
       ...data,
       image: data.image?.item(0),
@@ -95,6 +95,7 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
     });
     if (success) {
       onClose();
+      reset();
     }
   };
 
