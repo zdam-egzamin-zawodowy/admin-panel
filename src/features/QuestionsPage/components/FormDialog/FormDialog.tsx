@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { pick } from 'lodash';
+import { pick, get } from 'lodash';
 import useQualifications from './FormDialog.useQualifications';
+import { capitalizeFirstLetter } from './helpers';
 import { QuestionInput, Question, Maybe, Answer } from 'libs/graphql/types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,7 +15,9 @@ import {
   DialogTitle,
   MenuItem,
   TextField,
+  TextFieldProps,
 } from '@material-ui/core';
+import ImagePreview from './ImagePreview';
 
 const ANSWERS = Object.values(Answer);
 
@@ -23,6 +27,21 @@ export interface FormDialogProps extends Pick<DialogProps, 'open'> {
   onSubmit: (input: QuestionInput) => Promise<boolean> | boolean;
 }
 
+type Images = Pick<
+  QuestionInput,
+  | 'deleteImage'
+  | 'deleteAnswerAImage'
+  | 'deleteAnswerBImage'
+  | 'deleteAnswerCImage'
+  | 'deleteAnswerDImage'
+> & {
+  image?: FileList;
+  answerAImage?: FileList;
+  answerBImage?: FileList;
+  answerCImage?: FileList;
+  answerDImage?: FileList;
+};
+
 const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
   const editMode = Boolean(question);
   const {
@@ -31,26 +50,87 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
     errors,
     control,
     formState: { isSubmitting },
+    watch,
+    setValue,
   } = useForm<QuestionInput>({});
+  const images: Images = watch([
+    'image',
+    'deleteImage',
+    'answerAImage',
+    'deleteAnswerAImage',
+    'answerBImage',
+    'deleteAnswerBImage',
+    'answerCImage',
+    'deleteAnswerCImage',
+    'answerDImage',
+    'deleteAnswerDImage',
+  ]);
   const {
     qualifications,
     loading: loadingQualifications,
   } = useQualifications();
   const classes = useStyles();
 
+  useEffect(() => {
+    [
+      'deleteImage',
+      'deleteAnswerAImage',
+      'deleteAnswerBImage',
+      'deleteAnswerCImage',
+      'deleteAnswerDImage',
+    ].forEach(key => {
+      register(key);
+    });
+  }, [register]);
+
   const _onSubmit = async (data: QuestionInput) => {
-    const filtered = editMode
-      ? pick(
-          data,
-          Object.keys(data).filter(key => data[key as keyof QuestionInput])
-        )
-      : data;
-    const success = await onSubmit(filtered);
+    console.log(data);
+    const success = await onSubmit({
+      ...data,
+      image: data.image?.item(0),
+      answerAImage: data.answerAImage?.item(0),
+      answerBImage: data.answerBImage?.item(0),
+      answerCImage: data.answerCImage?.item(0),
+      answerDImage: data.answerDImage?.item(0),
+    });
     if (success) {
       onClose();
     }
   };
 
+  const renderImagePreview = (key: keyof Images) => {
+    const deleteKey = ('delete' + capitalizeFirstLetter(key)) as keyof Images;
+    const uploadedImage = images[key] as FileList | undefined;
+
+    if (
+      (uploadedImage && uploadedImage.length > 0) ||
+      (question && get(question, key) && !get(images, deleteKey))
+    ) {
+      return (
+        <ImagePreview
+          file={uploadedImage?.item(0)}
+          src={get(question, key, '')}
+          onDelete={() => {
+            setValue(key, undefined);
+            setValue(deleteKey, true);
+          }}
+        />
+      );
+    }
+
+    return null;
+  };
+
+  const defaultFileInputProps: TextFieldProps = {
+    type: 'file',
+    InputLabelProps: {
+      shrink: true,
+    },
+    inputProps: {
+      accept: ['image/*'],
+      multiple: false,
+    },
+  };
   return (
     <Dialog
       open={open}
@@ -63,6 +143,16 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
           {editMode ? 'Edycja pytania' : 'Tworzenie pytania'}
         </DialogTitle>
         <DialogContent className={classes.dialogContent}>
+          {renderImagePreview('image')}
+          <TextField
+            fullWidth
+            label="Obrazek"
+            name="image"
+            {...defaultFileInputProps}
+            inputRef={register}
+            error={!!errors.image}
+            helperText={errors.image?.message ?? ''}
+          />
           <TextField
             fullWidth
             label="Treść pytania"
@@ -112,24 +202,33 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
           />
           {ANSWERS.map(answer => {
             const upper = answer.toUpperCase();
+            const key = `answer${upper}` as keyof QuestionInput;
+            const imageKey = `${key}Image` as keyof Images;
             return (
-              <TextField
-                fullWidth
-                key={upper}
-                label={`Odpowiedź ${upper}`}
-                name={`answer${upper}`}
-                multiline
-                defaultValue={
-                  question ? question[`answer${upper}` as keyof Question] : ''
-                }
-                inputRef={register({
-                  required: 'Te pole jest wymagane.',
-                })}
-                error={!!errors[`answer${upper}` as keyof QuestionInput]}
-                helperText={
-                  errors[`answer${upper}` as keyof QuestionInput]?.message ?? ''
-                }
-              />
+              <div key={upper} className={classes.dialogContent}>
+                {renderImagePreview(imageKey)}
+                <TextField
+                  fullWidth
+                  label={`Odpowiedź ${upper} obrazek`}
+                  name={imageKey}
+                  {...defaultFileInputProps}
+                  inputRef={register}
+                  error={!!errors[imageKey]}
+                  helperText={errors[imageKey]?.message ?? ''}
+                />
+                <TextField
+                  fullWidth
+                  label={`Odpowiedź ${upper}`}
+                  name={key}
+                  multiline
+                  defaultValue={question ? question[key as keyof Question] : ''}
+                  inputRef={register({
+                    required: 'Te pole jest wymagane.',
+                  })}
+                  error={!!errors[key]}
+                  helperText={errors[key]?.message ?? ''}
+                />
+              </div>
             );
           })}
           {!loadingQualifications && (
