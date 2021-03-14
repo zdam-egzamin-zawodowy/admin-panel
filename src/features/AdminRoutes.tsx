@@ -4,6 +4,7 @@ import AppLayout from 'common/AppLayout/AppLayout';
 import UsersPage from './UsersPage/UsersPage';
 import ProfessionsPage from './ProfessionsPage/ProfessionsPage';
 import QualificationsPage from './QualificationsPage/QualificationsPage';
+import QuestionsPage from './QuestionsPage/QuestionsPage';
 
 function AdminRoutes() {
   return (
@@ -17,6 +18,9 @@ function AdminRoutes() {
         </RRDRoute>
         <RRDRoute exact path={Route.QualificationsPage}>
           <QualificationsPage />
+        </RRDRoute>
+        <RRDRoute exact path={Route.QuestionsPage}>
+          <QuestionsPage />
         </RRDRoute>
       </Switch>
     </AppLayout>
