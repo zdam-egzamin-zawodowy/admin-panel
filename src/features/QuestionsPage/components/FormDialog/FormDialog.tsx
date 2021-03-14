@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { pick, get } from 'lodash';
+import { get } from 'lodash';
 import useQualifications from './FormDialog.useQualifications';
 import { capitalizeFirstLetter } from './helpers';
 import { QuestionInput, Question, Maybe, Answer } from 'libs/graphql/types';
@@ -106,10 +106,14 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
       (uploadedImage && uploadedImage.length > 0) ||
       (question && get(question, key) && !get(images, deleteKey))
     ) {
+      let src = get(question, key, '');
+      if (src && question) {
+        src += `?` + new Date(question.updatedAt).getTime();
+      }
       return (
         <ImagePreview
           file={uploadedImage?.item(0)}
-          src={get(question, key, '')}
+          src={src}
           onDelete={() => {
             setValue(key, undefined);
             setValue(deleteKey, true);

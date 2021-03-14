@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import buildURL from 'utils/buildURL';
+
 import { Tooltip, IconButton, Box } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
 
@@ -13,7 +15,10 @@ const PreviewImage = ({ file, src, onDelete, disabled }: PreviewImageProps) => {
   const [_src, _setSrc] = useState<string>('');
 
   useEffect(() => {
-    if (!file) return _setSrc(src ?? '');
+    if (!file && !src && process.env.NODE_ENV === 'development') {
+      console.warn('PreviewImage: you should specify file or src');
+    }
+    if (!file) return _setSrc(buildURL('cdn', src ?? ''));
     const reader = new FileReader();
 
     reader.onload = function (e) {
