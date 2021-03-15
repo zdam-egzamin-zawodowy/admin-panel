@@ -1,4 +1,3 @@
-import React from 'react';
 import { Route } from './types';
 
 import { List } from '@material-ui/core';

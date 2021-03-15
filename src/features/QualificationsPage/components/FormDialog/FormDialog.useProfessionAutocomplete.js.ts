@@ -97,9 +97,7 @@ const useProfessionAutocomplete = ({ qualificationID, control }: Options) => {
 
   return {
     professions,
-    get loading() {
-      return this.professions.length === 0 && loading;
-    },
+    loading: professions.length === 0 && loading,
     isLoadingSuggestions,
     suggestions,
     setSearch,

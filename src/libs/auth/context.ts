@@ -1,8 +1,8 @@
-import React from 'react';
+import { createContext, useContext } from 'react';
 import { AuthContext } from './types';
 import TokenStorage from '../tokenstorage/TokenStorage';
 
-const ctx = React.createContext<AuthContext>({
+const ctx = createContext<AuthContext>({
   tokenStorage: new TokenStorage(),
   signIn: () => new Promise(resolve => resolve(null)),
   signOut: () => new Promise(resolve => resolve()),
@@ -12,7 +12,7 @@ const ctx = React.createContext<AuthContext>({
 ctx.displayName = 'AuthContext';
 
 const useAuth = (): AuthContext => {
-  return React.useContext(ctx);
+  return useContext(ctx);
 };
 
 export { ctx as context, useAuth };

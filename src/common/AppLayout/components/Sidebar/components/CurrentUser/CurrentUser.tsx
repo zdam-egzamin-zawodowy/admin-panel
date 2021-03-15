@@ -1,4 +1,3 @@
-import React from 'react';
 import { useAuth } from 'libs/auth';
 
 import { Box, Typography } from '@material-ui/core';

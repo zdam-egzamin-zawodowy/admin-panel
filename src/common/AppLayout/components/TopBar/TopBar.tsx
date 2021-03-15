@@ -1,4 +1,3 @@
-import React from 'react';
 import clsx from 'clsx';
 import { useAuth } from 'libs/auth';
 import { Route } from 'config/routing';

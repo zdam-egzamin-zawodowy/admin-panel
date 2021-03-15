@@ -1,4 +1,4 @@
-import React, { forwardRef, RefObject } from 'react';
+import { forwardRef, RefObject } from 'react';
 import {
   Link as RRDLink,
   LinkProps as RRDLinkProps,

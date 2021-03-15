@@ -1,4 +1,3 @@
-import React from 'react';
 import { get, isString, isNumber } from 'lodash';
 import { format } from 'date-fns';
 import formatNumber from 'utils/formatNumber';
