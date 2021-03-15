@@ -99,7 +99,7 @@ const SignInPage = () => {
               <Button
                 disabled={isSubmitting}
                 variant="contained"
-                color="primary"
+                color="secondary"
                 type="submit"
               >
                 Zaloguj się
