@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 import { QUERY_QUESTIONS } from './queries';
 import { Query, QueryQuestionsArgs } from 'libs/graphql/types';
@@ -22,12 +23,11 @@ const useQuestions = (
       },
     },
   });
+  const questions = useMemo(() => data?.questions.items ?? [], [data]);
 
   return {
-    questions: data?.questions.items ?? [],
-    get loading() {
-      return this.questions.length === 0 && loading;
-    },
+    questions,
+    loading: questions.length === 0 && loading,
     total: data?.questions.total ?? 0,
     refetch,
   };

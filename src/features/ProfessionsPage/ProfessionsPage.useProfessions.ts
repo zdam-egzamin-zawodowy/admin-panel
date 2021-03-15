@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 import { QUERY_PROFESSIONS } from './queries';
 import { Query, QueryProfessionsArgs } from 'libs/graphql/types';
@@ -22,12 +23,11 @@ const useProfessions = (
       },
     },
   });
+  const professions = useMemo(() => data?.professions.items ?? [], [data]);
 
   return {
-    professions: data?.professions.items ?? [],
-    get loading() {
-      return this.professions.length === 0 && loading;
-    },
+    professions,
+    loading: professions.length === 0 && loading,
     total: data?.professions.total ?? 0,
     refetch,
   };
