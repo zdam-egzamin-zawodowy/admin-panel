@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { TableRow, TableCell, Typography } from '@material-ui/core';
 
 function TableEmpty() {

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 
 import { TableRow, TableCell } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';

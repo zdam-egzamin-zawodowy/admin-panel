@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useApolloClient } from '@apollo/client';
 import { isFunction } from 'lodash';
 import { context as Context } from './context';

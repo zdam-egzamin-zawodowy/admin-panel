@@ -10,6 +10,7 @@ import {
 import { useSnackbar } from 'notistack';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import { useAuth } from 'libs/auth';
+import { useScrollToElement } from 'libs/hooks';
 import useUsers from './UsersPage.useUsers';
 import { validateRowsPerPage } from 'common/Table/helpers';
 import {
@@ -76,6 +77,8 @@ const UsersPage = () => {
     sort.toString(),
     search
   );
+
+  useScrollToElement(document.documentElement, [page, limit, sort, search]);
 
   useUpdateEffect(() => {
     if (selectedUsers.length > 0) {

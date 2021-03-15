@@ -9,6 +9,7 @@ import {
 } from 'use-query-params';
 import { useSnackbar } from 'notistack';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
+import { useScrollToElement } from 'libs/hooks';
 import useQualifications from './QualificationsPage.useQualifications';
 import { validateRowsPerPage } from 'common/Table/helpers';
 import {
@@ -72,6 +73,8 @@ const QualificationsPage = () => {
     sort.toString(),
     search
   );
+
+  useScrollToElement(document.documentElement, [page, limit, sort, search]);
 
   useUpdateEffect(() => {
     if (selectedQualifications.length > 0) {

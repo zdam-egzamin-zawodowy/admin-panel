@@ -1,4 +1,3 @@
-import React from 'react';
 import { validateRowsPerPage, isObjKey } from './helpers';
 import { Action, Column, OrderDirection } from './types';
 

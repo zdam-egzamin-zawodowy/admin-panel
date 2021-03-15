@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { QUERY_USERS } from './queries';
 import { Query, QueryUsersArgs } from 'libs/graphql/types';
+import { useMemo } from 'react';
 
 const useUsers = (
   page: number,
@@ -25,12 +26,11 @@ const useUsers = (
       },
     },
   });
+  const users = useMemo(() => data?.users.items ?? [], [data]);
 
   return {
-    users: data?.users.items ?? [],
-    get loading() {
-      return this.users.length === 0 && loading;
-    },
+    users,
+    loading: users.length === 0 && loading,
     total: data?.users.total ?? 0,
     refetch,
   };

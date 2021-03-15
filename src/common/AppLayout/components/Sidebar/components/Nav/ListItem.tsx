@@ -1,4 +1,4 @@
-import React, { Fragment, useState, memo } from 'react';
+import { Fragment, useState, memo } from 'react';
 import { useLocation, matchPath } from 'react-router-dom';
 import { Route } from './types';
 
