@@ -37,7 +37,7 @@ const TopBar = ({ className, openSidebar }: Props) => {
             <Hidden xsDown>
               <Typography variant="h4">
                 <Link color="inherit" to={Route.UsersPage}>
-                  Zdam Egzamin Zawodowy
+                  zdamegzaminzawodowy.pl
                 </Link>
               </Typography>
             </Hidden>
