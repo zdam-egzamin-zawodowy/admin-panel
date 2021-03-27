@@ -8,6 +8,11 @@ import { blue, pink } from '@material-ui/core/colors';
 const createTheme = (): Theme => {
   return responsiveFontSizes(
     createMuiTheme({
+      typography: {
+        h1: {
+          fontSize: '4.5rem',
+        },
+      },
       palette: {
         primary: {
           main: blue['A200'],
