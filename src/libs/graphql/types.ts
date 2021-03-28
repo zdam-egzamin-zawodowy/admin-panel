@@ -9,104 +9,20 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Upload: any;
   Time: Date | string;
+  Upload: any;
 };
 
 
 
 
-export type ProfessionInput = {
+export type QualificationInput = {
   name?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-};
-
-
-export type UserList = {
-  total: Scalars['Int'];
-  items?: Maybe<Array<User>>;
-};
-
-export type UserInput = {
-  displayName?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  role?: Maybe<Role>;
-  activated?: Maybe<Scalars['Boolean']>;
-};
-
-export type QuestionFilter = {
-  id?: Maybe<Array<Scalars['ID']>>;
-  idNEQ?: Maybe<Array<Scalars['ID']>>;
-  from?: Maybe<Array<Scalars['String']>>;
-  contentIEQ?: Maybe<Scalars['String']>;
-  contentMATCH?: Maybe<Scalars['String']>;
-  qualificationID?: Maybe<Array<Scalars['Int']>>;
-  qualificationIDNEQ?: Maybe<Array<Scalars['Int']>>;
-  qualificationFilter?: Maybe<QualificationFilter>;
-  createdAt?: Maybe<Scalars['Time']>;
-  createdAtGT?: Maybe<Scalars['Time']>;
-  createdAtGTE?: Maybe<Scalars['Time']>;
-  createdAtLT?: Maybe<Scalars['Time']>;
-  createdAtLTE?: Maybe<Scalars['Time']>;
-};
-
-
-export type User = {
-  id: Scalars['ID'];
-  displayName: Scalars['String'];
-  role: Role;
-  email: Scalars['String'];
-  activated: Scalars['Boolean'];
-  createdAt: Scalars['Time'];
-};
-
-export type UserFilterOr = {
-  displayNameIEQ?: Maybe<Scalars['String']>;
-  displayNameMATCH?: Maybe<Scalars['String']>;
-  emailIEQ?: Maybe<Scalars['String']>;
-  emailMATCH?: Maybe<Scalars['String']>;
-};
-
-export type ProfessionFilter = {
-  id?: Maybe<Array<Scalars['ID']>>;
-  idNEQ?: Maybe<Array<Scalars['ID']>>;
-  slug?: Maybe<Array<Scalars['String']>>;
-  slugNEQ?: Maybe<Array<Scalars['String']>>;
-  name?: Maybe<Array<Scalars['String']>>;
-  nameNEQ?: Maybe<Array<Scalars['String']>>;
-  nameIEQ?: Maybe<Scalars['String']>;
-  nameMATCH?: Maybe<Scalars['String']>;
-  descriptionIEQ?: Maybe<Scalars['String']>;
-  descriptionMATCH?: Maybe<Scalars['String']>;
-  qualificationID?: Maybe<Array<Scalars['ID']>>;
-  createdAt?: Maybe<Scalars['Time']>;
-  createdAtGT?: Maybe<Scalars['Time']>;
-  createdAtGTE?: Maybe<Scalars['Time']>;
-  createdAtLT?: Maybe<Scalars['Time']>;
-  createdAtLTE?: Maybe<Scalars['Time']>;
-};
-
-export type Qualification = {
-  id: Scalars['ID'];
-  slug: Scalars['String'];
-  name: Scalars['String'];
-  code: Scalars['String'];
+  code?: Maybe<Scalars['String']>;
   formula?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  createdAt: Scalars['Time'];
-};
-
-export type QualificationFilterOr = {
-  nameMatch?: Maybe<Scalars['String']>;
-  nameIEQ?: Maybe<Scalars['String']>;
-  codeMatch?: Maybe<Scalars['String']>;
-  codeIEQ?: Maybe<Scalars['String']>;
-};
-
-export type QuestionList = {
-  total: Scalars['Int'];
-  items?: Maybe<Array<Question>>;
+  associateProfession?: Maybe<Array<Scalars['Int']>>;
+  dissociateProfession?: Maybe<Array<Scalars['Int']>>;
 };
 
 export type QuestionInput = {
@@ -131,7 +47,258 @@ export type QuestionInput = {
   deleteAnswerDImage?: Maybe<Scalars['Boolean']>;
 };
 
+export type QuestionFilter = {
+  id?: Maybe<Array<Scalars['ID']>>;
+  idNEQ?: Maybe<Array<Scalars['ID']>>;
+  from?: Maybe<Array<Scalars['String']>>;
+  contentIEQ?: Maybe<Scalars['String']>;
+  contentMATCH?: Maybe<Scalars['String']>;
+  qualificationID?: Maybe<Array<Scalars['Int']>>;
+  qualificationIDNEQ?: Maybe<Array<Scalars['Int']>>;
+  qualificationFilter?: Maybe<QualificationFilter>;
+  createdAt?: Maybe<Scalars['Time']>;
+  createdAtGT?: Maybe<Scalars['Time']>;
+  createdAtGTE?: Maybe<Scalars['Time']>;
+  createdAtLT?: Maybe<Scalars['Time']>;
+  createdAtLTE?: Maybe<Scalars['Time']>;
+};
+
+export type User = {
+  id: Scalars['ID'];
+  displayName: Scalars['String'];
+  role: Role;
+  email: Scalars['String'];
+  activated: Scalars['Boolean'];
+  createdAt: Scalars['Time'];
+};
+
 export type UpdateManyUsersInput = {
+  role?: Maybe<Role>;
+  activated?: Maybe<Scalars['Boolean']>;
+};
+
+export type ProfessionList = {
+  total: Scalars['Int'];
+  items?: Maybe<Array<Profession>>;
+};
+
+export type QualificationList = {
+  total: Scalars['Int'];
+  items?: Maybe<Array<Qualification>>;
+};
+
+export type QuestionList = {
+  total: Scalars['Int'];
+  items?: Maybe<Array<Question>>;
+};
+
+
+export type Query = {
+  professions: ProfessionList;
+  profession?: Maybe<Profession>;
+  qualifications: QualificationList;
+  similarQualifications: QualificationList;
+  qualification?: Maybe<Qualification>;
+  questions: QuestionList;
+  generateTest?: Maybe<Array<Question>>;
+  users: UserList;
+  user?: Maybe<User>;
+  me?: Maybe<User>;
+};
+
+
+export type QueryProfessionsArgs = {
+  filter?: Maybe<ProfessionFilter>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  sort?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryProfessionArgs = {
+  id?: Maybe<Scalars['Int']>;
+  slug?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryQualificationsArgs = {
+  filter?: Maybe<QualificationFilter>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  sort?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QuerySimilarQualificationsArgs = {
+  qualificationID: Scalars['ID'];
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  sort?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryQualificationArgs = {
+  id?: Maybe<Scalars['Int']>;
+  slug?: Maybe<Scalars['String']>;
+};
+
+
+export type QueryQuestionsArgs = {
+  filter?: Maybe<QuestionFilter>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  sort?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryGenerateTestArgs = {
+  qualificationIDs: Array<Scalars['ID']>;
+  limit?: Maybe<Scalars['Int']>;
+};
+
+
+export type QueryUsersArgs = {
+  filter?: Maybe<UserFilter>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  sort?: Maybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryUserArgs = {
+  id: Scalars['Int'];
+};
+
+export type Question = {
+  id: Scalars['ID'];
+  from?: Maybe<Scalars['String']>;
+  content: Scalars['String'];
+  explanation?: Maybe<Scalars['String']>;
+  correctAnswer: Answer;
+  image?: Maybe<Scalars['String']>;
+  answerA?: Maybe<Scalars['String']>;
+  answerAImage?: Maybe<Scalars['String']>;
+  answerB?: Maybe<Scalars['String']>;
+  answerBImage?: Maybe<Scalars['String']>;
+  answerC?: Maybe<Scalars['String']>;
+  answerCImage?: Maybe<Scalars['String']>;
+  answerD?: Maybe<Scalars['String']>;
+  answerDImage?: Maybe<Scalars['String']>;
+  qualification?: Maybe<Qualification>;
+  createdAt: Scalars['Time'];
+  updatedAt: Scalars['Time'];
+};
+
+export enum Role {
+  Admin = 'admin',
+  User = 'user'
+}
+
+export type UserWithToken = {
+  token: Scalars['String'];
+  user: User;
+};
+
+export type QualificationFilterOr = {
+  nameMatch?: Maybe<Scalars['String']>;
+  nameIEQ?: Maybe<Scalars['String']>;
+  codeMatch?: Maybe<Scalars['String']>;
+  codeIEQ?: Maybe<Scalars['String']>;
+};
+
+export type QualificationFilter = {
+  id?: Maybe<Array<Scalars['ID']>>;
+  idNEQ?: Maybe<Array<Scalars['ID']>>;
+  slug?: Maybe<Array<Scalars['String']>>;
+  slugNEQ?: Maybe<Array<Scalars['String']>>;
+  formula?: Maybe<Array<Scalars['String']>>;
+  formulaNEQ?: Maybe<Array<Scalars['String']>>;
+  name?: Maybe<Array<Scalars['String']>>;
+  nameNEQ?: Maybe<Array<Scalars['String']>>;
+  nameIEQ?: Maybe<Scalars['String']>;
+  nameMATCH?: Maybe<Scalars['String']>;
+  code?: Maybe<Array<Scalars['String']>>;
+  codeNEQ?: Maybe<Array<Scalars['String']>>;
+  codeIEQ?: Maybe<Scalars['String']>;
+  codeMATCH?: Maybe<Scalars['String']>;
+  descriptionIEQ?: Maybe<Scalars['String']>;
+  descriptionMATCH?: Maybe<Scalars['String']>;
+  professionID?: Maybe<Array<Scalars['Int']>>;
+  createdAt?: Maybe<Scalars['Time']>;
+  createdAtGT?: Maybe<Scalars['Time']>;
+  createdAtGTE?: Maybe<Scalars['Time']>;
+  createdAtLT?: Maybe<Scalars['Time']>;
+  createdAtLTE?: Maybe<Scalars['Time']>;
+  or?: Maybe<QualificationFilterOr>;
+};
+
+
+export type ProfessionInput = {
+  name?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+};
+
+export type ProfessionFilter = {
+  id?: Maybe<Array<Scalars['ID']>>;
+  idNEQ?: Maybe<Array<Scalars['ID']>>;
+  slug?: Maybe<Array<Scalars['String']>>;
+  slugNEQ?: Maybe<Array<Scalars['String']>>;
+  name?: Maybe<Array<Scalars['String']>>;
+  nameNEQ?: Maybe<Array<Scalars['String']>>;
+  nameIEQ?: Maybe<Scalars['String']>;
+  nameMATCH?: Maybe<Scalars['String']>;
+  descriptionIEQ?: Maybe<Scalars['String']>;
+  descriptionMATCH?: Maybe<Scalars['String']>;
+  qualificationID?: Maybe<Array<Scalars['ID']>>;
+  createdAt?: Maybe<Scalars['Time']>;
+  createdAtGT?: Maybe<Scalars['Time']>;
+  createdAtGTE?: Maybe<Scalars['Time']>;
+  createdAtLT?: Maybe<Scalars['Time']>;
+  createdAtLTE?: Maybe<Scalars['Time']>;
+};
+
+export enum Answer {
+  A = 'a',
+  B = 'b',
+  C = 'c',
+  D = 'd'
+}
+
+export type UserList = {
+  total: Scalars['Int'];
+  items?: Maybe<Array<User>>;
+};
+
+export type UserFilterOr = {
+  displayNameIEQ?: Maybe<Scalars['String']>;
+  displayNameMATCH?: Maybe<Scalars['String']>;
+  emailIEQ?: Maybe<Scalars['String']>;
+  emailMATCH?: Maybe<Scalars['String']>;
+};
+
+export type Profession = {
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  createdAt: Scalars['Time'];
+  qualifications: Array<Qualification>;
+};
+
+export type Qualification = {
+  id: Scalars['ID'];
+  slug: Scalars['String'];
+  name: Scalars['String'];
+  code: Scalars['String'];
+  formula?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  createdAt: Scalars['Time'];
+};
+
+export type UserInput = {
+  displayName?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
   role?: Maybe<Role>;
   activated?: Maybe<Scalars['Boolean']>;
 };
@@ -250,161 +417,4 @@ export type MutationSignInArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   staySignedIn?: Maybe<Scalars['Boolean']>;
-};
-
-export enum Role {
-  Admin = 'admin',
-  User = 'user'
-}
-
-export enum Answer {
-  A = 'a',
-  B = 'b',
-  C = 'c',
-  D = 'd'
-}
-
-export type Query = {
-  professions: ProfessionList;
-  profession?: Maybe<Profession>;
-  qualifications: QualificationList;
-  qualification?: Maybe<Qualification>;
-  questions: QuestionList;
-  generateTest?: Maybe<Array<Question>>;
-  users: UserList;
-  user?: Maybe<User>;
-  me?: Maybe<User>;
-};
-
-
-export type QueryProfessionsArgs = {
-  filter?: Maybe<ProfessionFilter>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  sort?: Maybe<Array<Scalars['String']>>;
-};
-
-
-export type QueryProfessionArgs = {
-  id?: Maybe<Scalars['Int']>;
-  slug?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryQualificationsArgs = {
-  filter?: Maybe<QualificationFilter>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  sort?: Maybe<Array<Scalars['String']>>;
-};
-
-
-export type QueryQualificationArgs = {
-  id?: Maybe<Scalars['Int']>;
-  slug?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryQuestionsArgs = {
-  filter?: Maybe<QuestionFilter>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  sort?: Maybe<Array<Scalars['String']>>;
-};
-
-
-export type QueryGenerateTestArgs = {
-  qualificationIDs: Array<Scalars['ID']>;
-  limit?: Maybe<Scalars['Int']>;
-};
-
-
-export type QueryUsersArgs = {
-  filter?: Maybe<UserFilter>;
-  limit?: Maybe<Scalars['Int']>;
-  offset?: Maybe<Scalars['Int']>;
-  sort?: Maybe<Array<Scalars['String']>>;
-};
-
-
-export type QueryUserArgs = {
-  id: Scalars['Int'];
-};
-
-export type Profession = {
-  id: Scalars['ID'];
-  slug: Scalars['String'];
-  name: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-  createdAt: Scalars['Time'];
-};
-
-export type QualificationInput = {
-  name?: Maybe<Scalars['String']>;
-  description?: Maybe<Scalars['String']>;
-  code?: Maybe<Scalars['String']>;
-  formula?: Maybe<Scalars['String']>;
-  associateProfession?: Maybe<Array<Scalars['Int']>>;
-  dissociateProfession?: Maybe<Array<Scalars['Int']>>;
-};
-
-export type QualificationFilter = {
-  id?: Maybe<Array<Scalars['ID']>>;
-  idNEQ?: Maybe<Array<Scalars['ID']>>;
-  slug?: Maybe<Array<Scalars['String']>>;
-  slugNEQ?: Maybe<Array<Scalars['String']>>;
-  formula?: Maybe<Array<Scalars['String']>>;
-  formulaNEQ?: Maybe<Array<Scalars['String']>>;
-  name?: Maybe<Array<Scalars['String']>>;
-  nameNEQ?: Maybe<Array<Scalars['String']>>;
-  nameIEQ?: Maybe<Scalars['String']>;
-  nameMATCH?: Maybe<Scalars['String']>;
-  code?: Maybe<Array<Scalars['String']>>;
-  codeNEQ?: Maybe<Array<Scalars['String']>>;
-  codeIEQ?: Maybe<Scalars['String']>;
-  codeMATCH?: Maybe<Scalars['String']>;
-  descriptionIEQ?: Maybe<Scalars['String']>;
-  descriptionMATCH?: Maybe<Scalars['String']>;
-  professionID?: Maybe<Array<Scalars['Int']>>;
-  createdAt?: Maybe<Scalars['Time']>;
-  createdAtGT?: Maybe<Scalars['Time']>;
-  createdAtGTE?: Maybe<Scalars['Time']>;
-  createdAtLT?: Maybe<Scalars['Time']>;
-  createdAtLTE?: Maybe<Scalars['Time']>;
-  or?: Maybe<QualificationFilterOr>;
-};
-
-export type UserWithToken = {
-  token: Scalars['String'];
-  user: User;
-};
-
-export type ProfessionList = {
-  total: Scalars['Int'];
-  items?: Maybe<Array<Profession>>;
-};
-
-export type QualificationList = {
-  total: Scalars['Int'];
-  items?: Maybe<Array<Qualification>>;
-};
-
-export type Question = {
-  id: Scalars['ID'];
-  from?: Maybe<Scalars['String']>;
-  content: Scalars['String'];
-  explanation?: Maybe<Scalars['String']>;
-  correctAnswer: Answer;
-  image?: Maybe<Scalars['String']>;
-  answerA?: Maybe<Scalars['String']>;
-  answerAImage?: Maybe<Scalars['String']>;
-  answerB?: Maybe<Scalars['String']>;
-  answerBImage?: Maybe<Scalars['String']>;
-  answerC?: Maybe<Scalars['String']>;
-  answerCImage?: Maybe<Scalars['String']>;
-  answerD?: Maybe<Scalars['String']>;
-  answerDImage?: Maybe<Scalars['String']>;
-  qualification?: Maybe<Qualification>;
-  createdAt: Scalars['Time'];
-  updatedAt: Scalars['Time'];
 };
