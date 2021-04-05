@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useUpdateEffect } from 'react-use';
 import { Controller, useForm } from 'react-hook-form';
 import { omit, pick } from 'lodash';
 import useProfessionAutocomplete from './FormDialog.useProfessionAutocomplete.js';
@@ -54,12 +55,16 @@ const FormDialog = ({
     control: control,
   });
   const classes = useStyles();
-
   useEffect(() => {
     reset({
       professions,
     });
   }, [professions, reset]);
+  useUpdateEffect(() => {
+    if (!open && selectedProfessions.length > 0) {
+      setValue('professions', []);
+    }
+  }, [open]);
 
   const prepareDataBeforeSave = (data: Input): QualificationInput => {
     return {
