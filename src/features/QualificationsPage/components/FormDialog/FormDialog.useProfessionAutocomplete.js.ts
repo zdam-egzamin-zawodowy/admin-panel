@@ -44,9 +44,7 @@ const useProfessionAutocomplete = ({ qualificationID, control }: Options) => {
     },
   });
   const professions = useMemo(() => data?.professions.items ?? [], [data]);
-  const autocompleteOptions:
-    | typeof selectedProfessions
-    | typeof suggestions = useMemo(() => {
+  const autocompleteOptions: typeof selectedProfessions = useMemo(() => {
     return [
       ...suggestions
         .filter(
