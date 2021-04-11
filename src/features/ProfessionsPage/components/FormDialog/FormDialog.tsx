@@ -20,12 +20,7 @@ export interface FormDialogProps extends Pick<DialogProps, 'open'> {
   onSubmit: (input: ProfessionInput) => Promise<boolean> | boolean;
 }
 
-const FormDialog = ({
-  open,
-  onClose,
-  profession,
-  onSubmit,
-}: FormDialogProps) => {
+const Form = ({ onClose, profession, onSubmit }: FormDialogProps) => {
   const editMode = Boolean(profession);
   const {
     register,
@@ -49,62 +44,55 @@ const FormDialog = ({
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={isSubmitting ? undefined : onClose}
-      fullWidth
-      maxWidth="xs"
-    >
-      <form onSubmit={handleSubmit(_onSubmit)}>
-        <DialogTitle>
-          {editMode ? 'Edycja zawodu' : 'Tworzenie zawodu'}
-        </DialogTitle>
-        <DialogContent className={classes.dialogContent}>
-          <TextField
-            fullWidth
-            label="Nazwa zawodu"
-            name="name"
-            defaultValue={profession?.name}
-            inputRef={register({
-              required: 'Te pole jest wymagane.',
-              maxLength: {
-                value: MAX_NAME_LENGTH,
-                message: `Maksymalna długość nazwy zawodu to ${MAX_NAME_LENGTH} znaki.`,
-              },
-            })}
-            error={!!errors.name}
-            helperText={errors.name ? errors.name.message : ''}
-          />
-          <TextField
-            fullWidth
-            label="Opis"
-            name="description"
-            defaultValue={profession?.description}
-            inputRef={register}
-            multiline
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            color="secondary"
-            type="button"
-            variant="contained"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            Anuluj
-          </Button>
-          <Button
-            type="submit"
-            color="primary"
-            variant="contained"
-            disabled={isSubmitting}
-          >
-            {editMode ? 'Zapisz' : 'Utwórz'}
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+    <form onSubmit={handleSubmit(_onSubmit)}>
+      <DialogTitle>
+        {editMode ? 'Edycja zawodu' : 'Tworzenie zawodu'}
+      </DialogTitle>
+      <DialogContent className={classes.dialogContent}>
+        <TextField
+          fullWidth
+          label="Nazwa zawodu"
+          name="name"
+          defaultValue={profession?.name}
+          inputRef={register({
+            required: 'Te pole jest wymagane.',
+            maxLength: {
+              value: MAX_NAME_LENGTH,
+              message: `Maksymalna długość nazwy zawodu to ${MAX_NAME_LENGTH} znaki.`,
+            },
+          })}
+          error={!!errors.name}
+          helperText={errors.name ? errors.name.message : ''}
+        />
+        <TextField
+          fullWidth
+          label="Opis"
+          name="description"
+          defaultValue={profession?.description}
+          inputRef={register}
+          multiline
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          color="secondary"
+          type="button"
+          variant="contained"
+          onClick={onClose}
+          disabled={isSubmitting}
+        >
+          Anuluj
+        </Button>
+        <Button
+          type="submit"
+          color="primary"
+          variant="contained"
+          disabled={isSubmitting}
+        >
+          {editMode ? 'Zapisz' : 'Utwórz'}
+        </Button>
+      </DialogActions>
+    </form>
   );
 };
 
@@ -115,5 +103,20 @@ const useStyles = makeStyles(theme => ({
     },
   },
 }));
+
+const FormDialog = (props: FormDialogProps) => {
+  const { onClose, open } = props;
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="xs"
+      keepMounted={false}
+    >
+      <Form {...props} />
+    </Dialog>
+  );
+};
 
 export default FormDialog;
