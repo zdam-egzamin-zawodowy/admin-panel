@@ -11,6 +11,7 @@ import { useSnackbar } from 'notistack';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import { useScrollToElement } from 'libs/hooks';
 import useQuestions from './QuestionsPage.useQuestions';
+import { polishPlurals } from 'polish-plurals';
 import { validateRowsPerPage } from 'common/Table/helpers';
 import {
   MUTATION_CREATE_QUESTION,
@@ -208,7 +209,12 @@ const QuestionsPage = () => {
       <Snackbar
         open={selectedQuestions.length > 0}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        message={`Wybrane pytania: ${selectedQuestions.length}`}
+        message={`Wybrano ${selectedQuestions.length} ${polishPlurals(
+          'pytanie',
+          'pytania',
+          'pytań',
+          selectedQuestions.length
+        )}`}
         action={
           <>
             <Button onClick={handleDeleteQuestions} color="secondary">
