@@ -42,7 +42,7 @@ type Images = Pick<
   answerDImage?: FileList;
 };
 
-const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
+const Form = ({ onClose, question, onSubmit }: FormDialogProps) => {
   const editMode = Boolean(question);
   const {
     register,
@@ -137,148 +137,148 @@ const FormDialog = ({ open, onClose, question, onSubmit }: FormDialogProps) => {
     },
   };
   return (
-    <Dialog
-      open={open}
-      onClose={isSubmitting ? undefined : onClose}
-      fullWidth
-      maxWidth="xs"
-    >
-      <form onSubmit={handleSubmit(_onSubmit)}>
-        <DialogTitle>
-          {editMode ? 'Edycja pytania' : 'Tworzenie pytania'}
-        </DialogTitle>
-        <DialogContent className={classes.dialogContent}>
-          {renderImagePreview('image')}
-          <TextField
-            fullWidth
-            label="Obrazek"
-            name="image"
-            {...defaultFileInputProps}
-            inputRef={register}
-            error={!!errors.image}
-            helperText={errors.image?.message ?? ''}
-          />
-          <TextField
-            fullWidth
-            label="Treść pytania"
-            name="content"
-            multiline
-            defaultValue={question?.content}
-            inputRef={register({
-              required: 'Te pole jest wymagane.',
-            })}
-            error={!!errors.content}
-            helperText={errors.content?.message ?? ''}
-          />
-          <TextField
-            fullWidth
-            label="Z"
-            name="from"
-            defaultValue={question?.from}
-            inputRef={register({
-              required: 'Te pole jest wymagane.',
-            })}
-            error={!!errors.from}
-            helperText={errors.from?.message ?? ''}
-          />
-          <TextField
-            fullWidth
-            label="Wyjaśnienie"
-            name="explanation"
-            multiline
-            defaultValue={question?.explanation}
-            inputRef={register}
-            error={!!errors.explanation}
-            helperText={errors.explanation?.message ?? ''}
-          />
+    <form onSubmit={handleSubmit(_onSubmit)}>
+      <DialogTitle>
+        {editMode ? 'Edycja pytania' : 'Tworzenie pytania'}
+      </DialogTitle>
+      <DialogContent className={classes.dialogContent}>
+        {renderImagePreview('image')}
+        <TextField
+          fullWidth
+          label="Obrazek"
+          name="image"
+          {...defaultFileInputProps}
+          inputRef={register}
+          error={!!errors.image}
+          helperText={errors.image?.message ?? ''}
+        />
+        <TextField
+          fullWidth
+          label="Treść pytania"
+          name="content"
+          multiline
+          defaultValue={question?.content}
+          inputRef={register({
+            required: 'Te pole jest wymagane.',
+          })}
+          error={!!errors.content}
+          helperText={errors.content?.message ?? ''}
+        />
+        <TextField
+          fullWidth
+          label="Z"
+          name="from"
+          defaultValue={question?.from}
+          inputRef={register({
+            required: 'Te pole jest wymagane.',
+          })}
+          error={!!errors.from}
+          helperText={errors.from?.message ?? ''}
+        />
+        <TextField
+          fullWidth
+          label="Wyjaśnienie"
+          name="explanation"
+          multiline
+          defaultValue={question?.explanation}
+          inputRef={register}
+          error={!!errors.explanation}
+          helperText={errors.explanation?.message ?? ''}
+        />
+        <Controller
+          name="correctAnswer"
+          defaultValue={question?.correctAnswer ?? ANSWERS[0]}
+          control={control}
+          as={
+            <TextField select fullWidth label="Poprawna odpowiedź">
+              {ANSWERS.map(answer => (
+                <MenuItem key={answer} value={answer}>
+                  {answer}
+                </MenuItem>
+              ))}
+            </TextField>
+          }
+        />
+        {ANSWERS.map(answer => {
+          const upper = answer.toUpperCase();
+          const key = `answer${upper}` as keyof QuestionInput;
+          const imageKey = `${key}Image` as keyof Images;
+          return (
+            <div key={upper} className={classes.dialogContent}>
+              {renderImagePreview(imageKey)}
+              <TextField
+                fullWidth
+                label={`Odpowiedź ${upper} obrazek`}
+                name={imageKey}
+                {...defaultFileInputProps}
+                inputRef={register}
+                error={!!errors[imageKey]}
+                helperText={errors[imageKey]?.message ?? ''}
+              />
+              <TextField
+                fullWidth
+                label={`Odpowiedź ${upper}`}
+                name={key}
+                multiline
+                defaultValue={question ? question[key as keyof Question] : ''}
+                inputRef={register({
+                  required: 'Te pole jest wymagane.',
+                })}
+                error={!!errors[key]}
+                helperText={errors[key]?.message ?? ''}
+              />
+            </div>
+          );
+        })}
+        {!loadingQualifications && (
           <Controller
-            name="correctAnswer"
-            defaultValue={question?.correctAnswer ?? ANSWERS[0]}
+            name="qualificationID"
+            defaultValue={question?.qualification?.id ?? qualifications[0]?.id}
             control={control}
+            rules={{
+              valueAsNumber: true,
+              required: 'Musisz wybrać kwalifikację.',
+            }}
             as={
-              <TextField select fullWidth label="Poprawna odpowiedź">
-                {ANSWERS.map(answer => (
-                  <MenuItem key={answer} value={answer}>
-                    {answer}
+              <TextField select fullWidth label="Kwalifikacja">
+                {qualifications.map(qualification => (
+                  <MenuItem key={qualification.id} value={qualification.id}>
+                    {qualification.name} ({qualification.code})
                   </MenuItem>
                 ))}
               </TextField>
             }
           />
-          {ANSWERS.map(answer => {
-            const upper = answer.toUpperCase();
-            const key = `answer${upper}` as keyof QuestionInput;
-            const imageKey = `${key}Image` as keyof Images;
-            return (
-              <div key={upper} className={classes.dialogContent}>
-                {renderImagePreview(imageKey)}
-                <TextField
-                  fullWidth
-                  label={`Odpowiedź ${upper} obrazek`}
-                  name={imageKey}
-                  {...defaultFileInputProps}
-                  inputRef={register}
-                  error={!!errors[imageKey]}
-                  helperText={errors[imageKey]?.message ?? ''}
-                />
-                <TextField
-                  fullWidth
-                  label={`Odpowiedź ${upper}`}
-                  name={key}
-                  multiline
-                  defaultValue={question ? question[key as keyof Question] : ''}
-                  inputRef={register({
-                    required: 'Te pole jest wymagane.',
-                  })}
-                  error={!!errors[key]}
-                  helperText={errors[key]?.message ?? ''}
-                />
-              </div>
-            );
-          })}
-          {!loadingQualifications && (
-            <Controller
-              name="qualificationID"
-              defaultValue={
-                question?.qualification?.id ?? qualifications[0]?.id
-              }
-              control={control}
-              rules={{
-                valueAsNumber: true,
-                required: 'Musisz wybrać kwalifikację.',
-              }}
-              as={
-                <TextField select fullWidth label="Kwalifikacja">
-                  {qualifications.map(qualification => (
-                    <MenuItem key={qualification.id} value={qualification.id}>
-                      {qualification.name} ({qualification.code})
-                    </MenuItem>
-                  ))}
-                </TextField>
-              }
-            />
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            color="secondary"
-            type="button"
-            variant="contained"
-            onClick={onClose}
-            disabled={isSubmitting}
-          >
-            Anuluj
-          </Button>
-          <Button
-            type="submit"
-            color="primary"
-            variant="contained"
-            disabled={isSubmitting}
-          >
-            {editMode ? 'Zapisz' : 'Utwórz'}
-          </Button>
-        </DialogActions>
-      </form>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button
+          color="secondary"
+          type="button"
+          variant="contained"
+          onClick={onClose}
+          disabled={isSubmitting}
+        >
+          Anuluj
+        </Button>
+        <Button
+          type="submit"
+          color="primary"
+          variant="contained"
+          disabled={isSubmitting}
+        >
+          {editMode ? 'Zapisz' : 'Utwórz'}
+        </Button>
+      </DialogActions>
+    </form>
+  );
+};
+
+const FormDialog = (props: FormDialogProps) => {
+  const { open, onClose } = props;
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+      <Form {...props} />
     </Dialog>
   );
 };
