@@ -8,6 +8,7 @@ import {
   withDefault,
 } from 'use-query-params';
 import { useSnackbar } from 'notistack';
+import { polishPlurals } from 'polish-plurals';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import { useScrollToElement } from 'libs/hooks';
 import useProfessions from './ProfessionsPage.useProfessions';
@@ -210,7 +211,12 @@ const ProfessionsPage = () => {
       <Snackbar
         open={selectedProfessions.length > 0}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        message={`Wybrane zawody: ${selectedProfessions.length}`}
+        message={`Wybrano ${selectedProfessions.length} ${polishPlurals(
+          'zawód',
+          'zawody',
+          'zawodów',
+          selectedProfessions.length
+        )}`}
         action={
           <>
             <Button onClick={handleDeleteProfessions} color="secondary">

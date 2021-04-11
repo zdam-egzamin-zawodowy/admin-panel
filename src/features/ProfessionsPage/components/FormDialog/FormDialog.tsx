@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { pick } from 'lodash';
+import { polishPlurals } from 'polish-plurals';
 import { MAX_NAME_LENGTH } from './constants';
 import { ProfessionInput } from 'libs/graphql/types';
 
@@ -58,7 +59,12 @@ const Form = ({ onClose, profession, onSubmit }: FormDialogProps) => {
             required: 'Te pole jest wymagane.',
             maxLength: {
               value: MAX_NAME_LENGTH,
-              message: `Maksymalna długość nazwy zawodu to ${MAX_NAME_LENGTH} znaki.`,
+              message: `Maksymalna długość nazwy zawodu to ${MAX_NAME_LENGTH} ${polishPlurals(
+                'znak',
+                'znaki',
+                'znaków',
+                MAX_NAME_LENGTH
+              )}.`,
             },
           })}
           error={!!errors.name}

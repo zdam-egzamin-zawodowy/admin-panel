@@ -61,8 +61,9 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
   return (
     <Dialog
       open={open}
-      onClose={isSubmitting ? undefined : onClose}
+      onClose={onClose}
       fullWidth
+      disableBackdropClick={isSubmitting}
       maxWidth="xs"
     >
       <form onSubmit={handleSubmit(_onSubmit)}>
