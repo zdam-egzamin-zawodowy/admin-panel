@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { omit, pick } from 'lodash';
+import { polishPlurals } from 'polish-plurals';
 import useProfessionAutocomplete from './FormDialog.useProfessionAutocomplete.js';
 import { FORMULAS, MAX_NAME_LENGTH } from './constants';
 import { Maybe, Qualification, QualificationInput } from 'libs/graphql/types';
@@ -100,7 +101,12 @@ const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
             required: 'Te pole jest wymagane.',
             maxLength: {
               value: MAX_NAME_LENGTH,
-              message: `Maksymalna długość nazwy kwalifikacji to ${MAX_NAME_LENGTH} znaki.`,
+              message: `Maksymalna długość nazwy kwalifikacji to ${MAX_NAME_LENGTH} ${polishPlurals(
+                'znak',
+                'znaki',
+                'znaków',
+                MAX_NAME_LENGTH
+              )}.`,
             },
           })}
           error={!!errors.name?.message}

@@ -8,6 +8,7 @@ import {
   withDefault,
 } from 'use-query-params';
 import { useSnackbar } from 'notistack';
+import { polishPlurals } from 'polish-plurals';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import { useScrollToElement } from 'libs/hooks';
 import useQualifications from './QualificationsPage.useQualifications';
@@ -210,7 +211,12 @@ const QualificationsPage = () => {
       <Snackbar
         open={selectedQualifications.length > 0}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        message={`Wybrane kwalifikacje: ${selectedQualifications.length}`}
+        message={`Wybrano ${selectedQualifications.length} ${polishPlurals(
+          'kwalifikację',
+          'kwalifikacje',
+          'kwalifikacji',
+          selectedQualifications.length
+        )}`}
         action={
           <>
             <Button onClick={handleDeleteQualifications} color="secondary">
