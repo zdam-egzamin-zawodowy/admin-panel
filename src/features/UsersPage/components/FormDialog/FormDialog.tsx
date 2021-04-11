@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { pick } from 'lodash';
+import { polishPlurals } from 'polish-plurals';
 import isEmail from 'validator/es/lib/isEmail';
 import { formatRole } from '../../utils';
 import {
@@ -82,7 +83,12 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
               },
               maxLength: {
                 value: MAX_DISPLAY_NAME_LENGTH,
-                message: `Maksymalna długość nazwy użytkownika to ${MAX_DISPLAY_NAME_LENGTH} znaki.`,
+                message: `Maksymalna długość nazwy użytkownika to ${MAX_DISPLAY_NAME_LENGTH} ${polishPlurals(
+                  'znak',
+                  'znaki',
+                  'znaków',
+                  MAX_DISPLAY_NAME_LENGTH
+                )}.`,
               },
             })}
             error={!!errors.displayName}
@@ -113,11 +119,21 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
               required: editMode ? false : 'Te pole jest wymagane.',
               minLength: {
                 value: MIN_PASSWORD_LENGTH,
-                message: `Hasło musi zawierać co najmniej ${MIN_PASSWORD_LENGTH} znaków.`,
+                message: `Hasło musi zawierać co najmniej ${MIN_PASSWORD_LENGTH} ${polishPlurals(
+                  'znak',
+                  'znaki',
+                  'znaków',
+                  MIN_PASSWORD_LENGTH
+                )}.`,
               },
               maxLength: {
                 value: MAX_PASSWORD_LENGTH,
-                message: `Hasło może zawierać co najwyżej ${MAX_PASSWORD_LENGTH} znaki.`,
+                message: `Hasło może zawierać co najwyżej ${MAX_PASSWORD_LENGTH} ${polishPlurals(
+                  'znak',
+                  'znaki',
+                  'znaków',
+                  MAX_PASSWORD_LENGTH
+                )}.`,
               },
             })}
             error={!!errors.password}
@@ -126,7 +142,7 @@ const FormDialog = ({ open, onClose, user, onSubmit }: FormDialogProps) => {
           <FormControl>
             <FormLabel>Rola</FormLabel>
             <RadioGroup name="role" defaultValue={user?.role ?? Role.User}>
-              {[Role.Admin, Role.User].map(role => {
+              {Object.values(Role).map(role => {
                 return (
                   <FormControlLabel
                     value={role}

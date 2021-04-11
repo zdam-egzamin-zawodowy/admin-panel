@@ -7,6 +7,7 @@ import { MutationSignInArgs, Mutation } from 'libs/graphql/types';
 import TokenStorage from '../tokenstorage/TokenStorage';
 import { QUERY_ME } from './queries';
 import { MUTATION_SIGN_IN } from './mutations';
+import { useCallback } from 'react';
 
 export interface AuthProviderProps {
   tokenStorage?: TokenStorage;
@@ -27,12 +28,7 @@ export function AuthProvider(props: AuthProviderProps) {
     }
     return new TokenStorage();
   }, [props.tokenStorage]);
-
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
     if (tokenStorage.token) {
       try {
         const result = await client.query<MeQueryResult>({
@@ -45,7 +41,10 @@ export function AuthProvider(props: AuthProviderProps) {
       } catch (e) {}
     }
     setLoading(false);
-  };
+  }, [setUser, setLoading, client, tokenStorage]);
+  useEffect(() => {
+    loadUser();
+  }, [loadUser]);
 
   const signIn: AuthContext['signIn'] = async (
     email: string,

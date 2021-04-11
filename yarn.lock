@@ -10153,6 +10153,11 @@ pnp-webpack-plugin@1.6.4:
   dependencies:
     ts-pnp "^1.1.6"
 
+polish-plurals@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/polish-plurals/-/polish-plurals-1.1.0.tgz#c512cc06df8881c7f199dd12aba197552c3dada8"
+  integrity sha512-Sect6u4dScUC15pUZGhbfr7Q5o6CRAIpBj/KdkYf27EUa5Ls6+MkK5LXUH3PQL5aPAmFGnmJMXhdXzNLGc5V5A==
+
 popper.js@1.16.1-lts:
   version "1.16.1-lts"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1-lts.tgz#cf6847b807da3799d80ee3d6d2f90df8a3f50b05"

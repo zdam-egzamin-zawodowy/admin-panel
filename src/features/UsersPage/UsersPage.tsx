@@ -8,6 +8,7 @@ import {
   withDefault,
 } from 'use-query-params';
 import { useSnackbar } from 'notistack';
+import { polishPlurals } from 'polish-plurals';
 import SortParam, { decodeSort } from 'libs/serialize-query-params/SortParam';
 import { useAuth } from 'libs/auth';
 import { useScrollToElement } from 'libs/hooks';
@@ -242,7 +243,12 @@ const UsersPage = () => {
       <Snackbar
         open={selectedUsers.length > 0}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        message={`Wybrani użytkownicy: ${selectedUsers.length}`}
+        message={`Wybrano ${selectedUsers.length} ${polishPlurals(
+          'użytkownika',
+          'użytkowników',
+          'użytkowników',
+          selectedUsers.length
+        )}`}
         action={
           <>
             <Button onClick={handleDeleteUsers} color="secondary">
