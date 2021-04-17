@@ -1,6 +1,5 @@
 FROM node:14.1.0-alpine as build-deps
 
-
 #Stage 1
 
 WORKDIR /usr/src/app
@@ -12,7 +11,7 @@ RUN yarn build
 
 #Stage 2
 
-FROM nginx:1.17.5-alpine
+FROM nginx:1.18-alpine
 COPY --from=build-deps /usr/src/app/build /var/www
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
