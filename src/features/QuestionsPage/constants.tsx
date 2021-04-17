@@ -1,6 +1,7 @@
 import { decodeSort } from 'libs/serialize-query-params/SortParam';
 import { Column } from 'common/Table/types';
 import { Question } from 'libs/graphql/types';
+import WordWrap from './components/WordWrap/WordWrap';
 
 export const DEFAULT_SORT = decodeSort('id DESC');
 export const COLUMNS: Column<Question>[] = [
@@ -18,6 +19,9 @@ export const COLUMNS: Column<Question>[] = [
     field: 'content',
     sortable: true,
     label: 'Treść',
+    valueFormatter: v => {
+      return <WordWrap>{v.content}</WordWrap>;
+    },
   },
   {
     field: 'qualification',
