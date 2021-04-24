@@ -4,7 +4,7 @@ FROM node:14.16.1-alpine as build-deps
 
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+RUN yarn
 COPY . ./
 ENV NODE_ENV=production
 RUN yarn build
