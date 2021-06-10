@@ -1,6 +1,6 @@
-import { useEffect, useMemo } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { omit, pick } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { pick } from 'lodash';
 import { polishPlurals } from 'polish-plurals';
 import useSuggestions from './FormDialog.useSuggestions';
 import { FORMULAS, MAX_NAME_LENGTH } from './constants';
@@ -35,15 +35,21 @@ export interface FormDialogProps extends Pick<DialogProps, 'open'> {
 
 const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
   const editMode = Boolean(qualification);
+  const [selectedProfessions, setSelectedProfessions] = useState<Profession[]>(
+    []
+  );
   const {
     register,
     handleSubmit,
     errors,
     control,
-    setValue,
     reset,
     formState: { isSubmitting },
-  } = useForm<Input>({});
+  } = useForm<Input>({
+    defaultValues: {
+      professions: [],
+    },
+  });
   const {
     isLoadingSuggestions,
     setSearch,
@@ -52,12 +58,7 @@ const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
   } = useSuggestions();
   const { professions, loading } = useProfessions(qualification?.id);
   const classes = useStyles();
-  const { fields: selectedProfessions } = useFieldArray<Profession, 'key'>({
-    control,
-    name: 'professions',
-    keyName: 'key',
-  });
-  const autocompleteOptions: typeof selectedProfessions = useMemo(() => {
+  const autocompleteOptions = useMemo(() => {
     return [
       ...suggestions.filter(
         profession =>
@@ -69,9 +70,7 @@ const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
     ];
   }, [suggestions, selectedProfessions]);
   useEffect(() => {
-    reset({
-      professions,
-    });
+    setSelectedProfessions(professions);
   }, [professions, reset]);
 
   const prepareDataBeforeSave = (data: Input): QualificationInput => {
@@ -171,17 +170,13 @@ const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
             loading={isLoadingSuggestions}
             value={selectedProfessions}
             onChange={(_, opts) => {
-              setValue(
-                'professions',
-                opts.map(profession => omit(profession, 'key'))
-              );
+              setSelectedProfessions(opts);
             }}
             getOptionSelected={(option, value) =>
               option && value && option.id === value.id
             }
             inputValue={search}
             onInputChange={(_, val, reason) => {
-              console.log(reason);
               setSearch(val);
             }}
             renderInput={params => (
