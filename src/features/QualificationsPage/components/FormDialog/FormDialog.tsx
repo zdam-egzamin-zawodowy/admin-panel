@@ -1,10 +1,15 @@
-import { useEffect } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { useEffect, useMemo } from 'react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { omit, pick } from 'lodash';
 import { polishPlurals } from 'polish-plurals';
-import useProfessionAutocomplete from './FormDialog.useProfessionAutocomplete.js';
+import useSuggestions from './FormDialog.useSuggestions';
 import { FORMULAS, MAX_NAME_LENGTH } from './constants';
-import { Maybe, Qualification, QualificationInput } from 'libs/graphql/types';
+import {
+  Maybe,
+  Profession,
+  Qualification,
+  QualificationInput,
+} from 'libs/graphql/types';
 import { Input } from './types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,6 +25,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
+import useProfessions from './FormDialog.useProfessions';
 
 export interface FormDialogProps extends Pick<DialogProps, 'open'> {
   qualification?: Maybe<Qualification>;
@@ -39,17 +45,29 @@ const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
     formState: { isSubmitting },
   } = useForm<Input>({});
   const {
-    professions,
-    loading,
     isLoadingSuggestions,
     setSearch,
-    autocompleteOptions,
-    selectedProfessions,
-  } = useProfessionAutocomplete({
-    qualificationID: qualification?.id,
-    control: control,
-  });
+    suggestions,
+    search,
+  } = useSuggestions();
+  const { professions, loading } = useProfessions(qualification?.id);
   const classes = useStyles();
+  const { fields: selectedProfessions } = useFieldArray<Profession, 'key'>({
+    control,
+    name: 'professions',
+    keyName: 'key',
+  });
+  const autocompleteOptions: typeof selectedProfessions = useMemo(() => {
+    return [
+      ...suggestions.filter(
+        profession =>
+          !selectedProfessions.some(
+            otherProfession => otherProfession.id === profession.id
+          )
+      ),
+      ...selectedProfessions,
+    ];
+  }, [suggestions, selectedProfessions]);
   useEffect(() => {
     reset({
       professions,
@@ -152,7 +170,6 @@ const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
             getOptionLabel={option => option?.name ?? ''}
             loading={isLoadingSuggestions}
             value={selectedProfessions}
-            getOptionDisabled={option => !!option.disabled}
             onChange={(_, opts) => {
               setValue(
                 'professions',
@@ -162,14 +179,16 @@ const Form = ({ onClose, qualification, onSubmit }: FormDialogProps) => {
             getOptionSelected={(option, value) =>
               option && value && option.id === value.id
             }
+            inputValue={search}
+            onInputChange={(_, val, reason) => {
+              console.log(reason);
+              setSearch(val);
+            }}
             renderInput={params => (
               <TextField
                 {...params}
                 variant="standard"
                 label="Zawody"
-                onChange={e => {
-                  setSearch(e.target.value);
-                }}
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
