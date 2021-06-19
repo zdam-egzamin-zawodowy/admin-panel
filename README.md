@@ -18,7 +18,7 @@
 git clone git@github.com:zdam-egzamin-zawodowy/admin-panel.git
 ```
 
-2. Navigate to the directory where you have cloned this repo.
+2. Open the folder with this project in a terminal.
 3. ``yarn install``
 4. ``yarn run start``
 
