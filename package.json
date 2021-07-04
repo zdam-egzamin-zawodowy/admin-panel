@@ -69,9 +69,9 @@
     ]
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "1.21.4",
-    "@graphql-codegen/typescript": "1.22.0",
-    "@graphql-codegen/typescript-operations": "1.17.16",
+    "@graphql-codegen/cli": "1.21.6",
+    "@graphql-codegen/typescript": "1.22.4",
+    "@graphql-codegen/typescript-operations": "1.18.3",
     "@types/apollo-upload-client": "^14.1.0",
     "@types/lodash": "^4.14.168",
     "@types/react-router-dom": "^5.1.7",
