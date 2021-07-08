@@ -20,7 +20,8 @@ jobs:
     working_directory: ~/zdamegzzawodowyadminpanel
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.2
       - run: |
           docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
       # build the application image
