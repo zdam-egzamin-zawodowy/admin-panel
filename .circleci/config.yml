@@ -2,7 +2,7 @@ version: 2
 jobs:
   build_latest:
     docker:
-      - image: circleci/node:14.18.1-browsers
+      - image: circleci/node:17.0.1-browsers
     working_directory: ~/zdamegzzawodowyadminpanel
     steps:
       - checkout
@@ -16,7 +16,7 @@ jobs:
       - run: docker push $DOCKER_LOGIN/zdam-egzamin-zawodowy-admin-panel:latest
   build_version:
     docker:
-      - image: circleci/node:14.18.1-browsers
+      - image: circleci/node:17.0.1-browsers
     working_directory: ~/zdamegzzawodowyadminpanel
     steps:
       - checkout
