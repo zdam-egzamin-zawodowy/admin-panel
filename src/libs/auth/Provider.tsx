@@ -22,12 +22,14 @@ export function AuthProvider(props: AuthProviderProps) {
   const client = useApolloClient();
   const [user, setUser] = useState<AuthContext['user']>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
   const tokenStorage = useMemo(() => {
     if (props.tokenStorage) {
       return props.tokenStorage;
     }
     return new TokenStorage();
   }, [props.tokenStorage]);
+
   const loadUser = useCallback(async () => {
     if (tokenStorage.token) {
       try {
@@ -42,6 +44,7 @@ export function AuthProvider(props: AuthProviderProps) {
     }
     setLoading(false);
   }, [setUser, setLoading, client, tokenStorage]);
+
   useEffect(() => {
     loadUser();
   }, [loadUser]);

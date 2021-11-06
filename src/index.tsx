@@ -8,8 +8,11 @@ import { AuthProvider } from './libs/auth';
 import ThemeProvider from './libs/material-ui/ThemeProvider';
 import TokenStorage from './libs/tokenstorage/TokenStorage';
 import createClient from './libs/graphql/createClient';
+import initSentry from './libs/sentry/initSentry';
 import { API_URI } from './config/api';
 import reportWebVitals from './reportWebVitals';
+
+initSentry();
 
 const tokenStorage = new TokenStorage();
 
