@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import { useDebounce } from 'react-use';
+import * as Sentry from '@sentry/react';
 import { QUERY_PROFESSIONS } from './queries';
 import { Profession, Query, QueryProfessionsArgs } from 'libs/graphql/types';
 
@@ -31,7 +32,9 @@ const useSuggestions = () => {
       if (data.professions?.items) {
         setSuggestions(data.professions.items);
       }
-    } catch (e) {}
+    } catch (e) {
+      Sentry.captureException(e);
+    }
     setIsLoadingSuggestions(false);
   };
 

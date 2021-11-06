@@ -1,13 +1,13 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
 import { isFunction } from 'lodash';
+import * as Sentry from '@sentry/react';
 import { context as Context } from './context';
 import { AuthContext, User } from './types';
 import { MutationSignInArgs, Mutation } from 'libs/graphql/types';
 import TokenStorage from '../tokenstorage/TokenStorage';
 import { QUERY_ME } from './queries';
 import { MUTATION_SIGN_IN } from './mutations';
-import { useCallback } from 'react';
 
 export interface AuthProviderProps {
   tokenStorage?: TokenStorage;
@@ -31,17 +31,22 @@ export function AuthProvider(props: AuthProviderProps) {
   }, [props.tokenStorage]);
 
   const loadUser = useCallback(async () => {
-    if (tokenStorage.token) {
-      try {
-        const result = await client.query<MeQueryResult>({
-          query: QUERY_ME,
-          fetchPolicy: 'network-only',
-        });
-        if (result.data.me) {
-          setUser(result.data.me);
-        }
-      } catch (e) {}
+    if (!tokenStorage.token) {
+      return;
     }
+
+    try {
+      const result = await client.query<MeQueryResult>({
+        query: QUERY_ME,
+        fetchPolicy: 'network-only',
+      });
+      if (result.data.me) {
+        setUser(result.data.me);
+      }
+    } catch (e) {
+      Sentry.captureException(e);
+    }
+
     setLoading(false);
   }, [setUser, setLoading, client, tokenStorage]);
 
@@ -67,22 +72,24 @@ export function AuthProvider(props: AuthProviderProps) {
       },
     });
 
-    if (result.data?.signIn?.user) {
-      if (isFunction(validate) && !validate(result.data.signIn.user)) {
-        return null;
-      }
-      tokenStorage.setToken(result.data.signIn.token);
-      setUser(result.data.signIn.user);
-      client.writeQuery<MeQueryResult>({
-        query: QUERY_ME,
-        data: {
-          me: result.data.signIn.user,
-        },
-      });
-      return result.data.signIn.user;
+    if (!result.data?.signIn?.user) {
+      return null;
     }
 
-    return null;
+    if (isFunction(validate) && !validate(result.data.signIn.user)) {
+      return null;
+    }
+
+    tokenStorage.setToken(result.data.signIn.token);
+    setUser(result.data.signIn.user);
+    client.writeQuery<MeQueryResult>({
+      query: QUERY_ME,
+      data: {
+        me: result.data.signIn.user,
+      },
+    });
+
+    return result.data.signIn.user;
   };
 
   const signOut = () => {
