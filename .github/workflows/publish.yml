@@ -40,7 +40,7 @@ jobs:
         with:
           context: .
           build-args: |
-            ENABLE_SENTRY=true
+            SENTRY_ENABLED=true
             SENTRY_URL=${{ secrets.SENTRY_URL }}
             SENTRY_ORG=${{ secrets.SENTRY_ORG }}
             SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT }}
