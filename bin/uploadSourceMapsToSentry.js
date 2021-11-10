@@ -16,7 +16,7 @@ async function createReleaseAndUpload() {
 
   const cli = new SentryCli();
   await cli.releases.new(releaseName);
-  await cli.releases.uploadSourceMaps(version, {
+  await cli.releases.uploadSourceMaps(releaseName, {
     include: ['build/static/js'],
     urlPrefix: '~/static/js',
     rewrite: false,
