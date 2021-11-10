@@ -13,7 +13,7 @@ async function createReleaseAndUpload() {
   }
 
   const cli = new SentryCli();
-  await cli.releases.new(version);
+  await cli.releases.new('zdam-egzamin-zawodowy-admin-panel@' + version);
   await cli.releases.uploadSourceMaps(version, {
     include: ['build/static/js'],
     urlPrefix: '~/static/js',
