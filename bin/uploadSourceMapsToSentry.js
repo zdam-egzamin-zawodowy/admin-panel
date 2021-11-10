@@ -12,14 +12,16 @@ async function createReleaseAndUpload() {
     );
   }
 
+  const releaseName = 'zdam-egzamin-zawodowy-admin-panel@' + version;
+
   const cli = new SentryCli();
-  await cli.releases.new('zdam-egzamin-zawodowy-admin-panel@' + version);
+  await cli.releases.new(releaseName);
   await cli.releases.uploadSourceMaps(version, {
     include: ['build/static/js'],
     urlPrefix: '~/static/js',
     rewrite: false,
   });
-  await cli.releases.finalize(version);
+  await cli.releases.finalize(releaseName);
 }
 
 createReleaseAndUpload();
