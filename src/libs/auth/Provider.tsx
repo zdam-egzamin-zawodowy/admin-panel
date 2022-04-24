@@ -46,13 +46,13 @@ export function AuthProvider(props: AuthProviderProps) {
     } catch (e) {
       Sentry.captureException(e);
     }
-
-    setLoading(false);
-  }, [setUser, setLoading, client, tokenStorage]);
+  }, [setUser, client, tokenStorage]);
 
   useEffect(() => {
-    loadUser();
-  }, [loadUser]);
+    loadUser().finally(() => {
+      setLoading(false)
+    })
+  }, [loadUser, setLoading]);
 
   const signIn: AuthContext['signIn'] = async (
     email: string,
